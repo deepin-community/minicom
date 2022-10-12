@@ -1,0 +1,17 @@
+diff --git a/src/minicom.h b/src/minicom.h
+index ebc1dec6f06082c59059766fc89c19726e91aef1..cd75ec46ffaf6a0bd8564c15f1edeea55460a5b3 100644
+--- a/src/minicom.h
++++ b/src/minicom.h
+@@ -47,12 +47,6 @@
+ #include <arpa/inet.h>
+ #endif
+ 
+-/*
+- * kubota@debian.or.jp 08/08/98
+- * COLS must be equal to or less than MAXCOLS.
+- */
+-#define MAXCOLS 256
+-
+ #define XA_OK_EXIST	1
+ #define XA_OK_NOTEXIST	2
+ 

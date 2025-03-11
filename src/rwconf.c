@@ -34,9 +34,7 @@
  *    er  18-Apr-99 - added P_MULTILINE for "multiline"
  *    jl  10.02.2000 - added P_STOPB
  */
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "port.h"
 #include "minicom.h"
@@ -135,7 +133,7 @@ struct pars mpars[MPARS_MAX + 1] = {
   { "BS",		0,   "backspace" },
   { N_("enabled"),	0,   "statusline" },
   { N_("Yes"),		0,   "hasdcd" },
-  { N_("Yes"),		0,   "rtscts" },
+  { N_("No"),		0,   "rtscts" },
   { N_("No"),		0,   "xonxoff" },
   { "D",		0,   "zauto" },
 
@@ -196,6 +194,10 @@ struct pars mpars[MPARS_MAX + 1] = {
   { "No",		0,    "rs485termbus" },
   { "0",		0,    "rs485delbefsnd" },
   { "0",		0,    "rs485delaftsnd" },
+
+  { "0",		0,    "line_timestamp" },
+  { "0",		0,    "msg_ch_delay" },
+  { "0",		0,    "msg_nl_delay" },
 
   /* That's all folks */
   { "",                 0,         NULL },

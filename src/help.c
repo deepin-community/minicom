@@ -17,9 +17,7 @@
  *  26.02.1998 - acme@conectiva.com.br - i18n
  *  mark.einon@gmail.com 16/02/11 - Added option to timestamp terminal output
  */
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "port.h"
 #include "minicom.h"

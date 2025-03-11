@@ -29,13 +29,71 @@
  *
  *   jl  23.06.97  adjustable DTR downtime
  */
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "port.h"
 #include "sysdep.h"
 #include "minicom.h"
+
+#ifdef __APPLE__
+#include <IOKit/serial/ioss.h>
+#endif
+
+/*
+ * This is for supporting higher baud rates on MacOS.
+ * Reference:
+ * https://github.com/npat-efault/picocom/blob/master/custbaud_bsd.h */
+#ifndef B460800
+#define B460800   460800
+#endif
+#ifndef B500000
+#define B500000   500000
+#endif
+#ifndef B576000
+#define B576000   576000
+#endif
+#ifndef B921600
+#define B921600   921600
+#endif
+#ifndef B1000000
+#define B1000000 1000000
+#endif
+#ifndef B1152000
+#define B1152000 1152000
+#endif
+#ifndef B1500000
+#define B1500000 1500000
+#endif
+#ifndef B2000000
+#define B2000000 2000000
+#endif
+#ifndef B2500000
+#define B2500000 2500000
+#endif
+#ifndef B3000000
+#define B3000000 3000000
+#endif
+#ifndef B3500000
+#define B3500000 3500000
+#endif
+#ifndef B4000000
+#define B4000000 4000000
+#endif
+
+/* On MacOS, setting unusual baudrates (see list above) does not work
+ * through tcsetattr but requires an additional ioctl. Interestingly,
+ * tcgetattr then returns the right baud rate, so we do not need to do
+ * anything there. */
+static void set_speed_apple(int fd, struct termios *p)
+{
+#ifdef __APPLE__
+  speed_t v = cfgetospeed(p);
+  ioctl(fd, IOSSIOSPEED, &v);
+#else
+  (void)fd;
+  (void)p;
+#endif
+}
 
 /* Set hardware flow control. */
 void m_sethwf(int fd, int on)
@@ -44,10 +102,8 @@ void m_sethwf(int fd, int on)
   struct termios tty;
 #endif
 
-#ifdef USE_SOCKET
   if (portfd_is_socket)
 	return;
-#endif
 
 #ifdef POSIX_TERMIOS
   tcgetattr(fd, &tty);
@@ -56,16 +112,16 @@ void m_sethwf(int fd, int on)
   else
     tty.c_cflag &= ~CRTSCTS;
   tcsetattr(fd, TCSANOW, &tty);
+  set_speed_apple(fd, &tty);
 #endif
 }
 
 /* Set RTS line. Sometimes dropped. Linux specific? */
 static void m_setrts(int fd)
 {
-#ifdef USE_SOCKET
   if (portfd_is_socket)
     return;
-#endif
+
 #if defined(TIOCM_RTS) && defined(TIOCMODG)
   {
     int mcs=0;
@@ -82,10 +138,9 @@ static void m_setrts(int fd)
  */
 void m_dtrtoggle(int fd, int sec)
 {
-#ifdef USE_SOCKET
   if (portfd_is_socket)
     return;
-#endif
+
   {
 #ifdef TIOCSDTR
     /* Use the ioctls meant for this type of thing. */
@@ -110,6 +165,7 @@ void m_dtrtoggle(int fd, int sec)
     tcsetattr(fd, TCSANOW, &tty);
     sleep(sec);
     tcsetattr(fd, TCSANOW, &old);
+    set_speed_apple(fd, &old);
 
 #  else /* POSIX */
 #    ifdef _V7
@@ -136,10 +192,9 @@ void m_dtrtoggle(int fd, int sec)
  */
 void m_break(int fd)
 {
-#ifdef USE_SOCKET
   if (portfd_is_socket)
     return;
-#endif
+
 #ifdef POSIX_TERMIOS
   tcsendbreak(fd, 0);
 #else
@@ -170,7 +225,6 @@ void m_break(int fd)
  */
 int m_getdcd(int fd)
 {
-#ifdef USE_SOCKET
   if (portfd_is_socket) {
     if (portfd_is_connected)
       return 1;
@@ -178,7 +232,7 @@ int m_getdcd(int fd)
     term_socket_connect();
     return portfd_is_connected;
   }
-#endif
+
 #ifdef TIOCMODG
   {
     int mcs = 0;
@@ -211,10 +265,9 @@ static int m_word;
  */
 void m_savestate(int fd)
 {
-#ifdef USE_SOCKET
   if (portfd_is_socket)
     return;
-#endif
+
 #ifdef POSIX_TERMIOS
   tcgetattr(fd, &savetty);
 #else
@@ -236,12 +289,12 @@ void m_savestate(int fd)
  */
 void m_restorestate(int fd)
 {
-#ifdef USE_SOCKET
   if (portfd_is_socket)
     return;
-#endif
+
 #ifdef POSIX_TERMIOS
   tcsetattr(fd, TCSANOW, &savetty);
+  set_speed_apple(fd, &savetty);
 #else
 #  if defined(_BSD43) || defined(_V7)
   ioctl(fd, TIOCSETP, &sg);
@@ -263,10 +316,9 @@ void m_restorestate(int fd)
 /*ARGSUSED*/
 void m_nohang(int fd)
 {
-#ifdef USE_SOCKET
   if (portfd_is_socket)
     return;
-#endif
+
   {
 #ifdef POSIX_TERMIOS
     struct termios sgg;
@@ -274,6 +326,7 @@ void m_nohang(int fd)
     tcgetattr(fd, &sgg);
     sgg.c_cflag |= CLOCAL;
     tcsetattr(fd, TCSANOW, &sgg);
+    set_speed_apple(fd, &sgg);
 #else
 #  if defined (_BSD43) && defined(LNOHANG)
     int lsw;
@@ -291,10 +344,9 @@ void m_nohang(int fd)
  */
 void m_hupcl(int fd, int on)
 {
-#ifdef USE_SOCKET
   if (portfd_is_socket)
     return;
-#endif
+
   /* Eh, I don't know how to do this under BSD (yet..) */
 #ifdef POSIX_TERMIOS
   {
@@ -306,6 +358,7 @@ void m_hupcl(int fd, int on)
     else
       sgg.c_cflag &= ~HUPCL;
     tcsetattr(fd, TCSANOW, &sgg);
+    set_speed_apple(fd, &sgg);
   }
 #endif
 }
@@ -403,10 +456,8 @@ void m_setparms(int fd, char *baudr, char *par, char *bits, char *stopb,
   struct sgttyb tty;
 #endif /* POSIX_TERMIOS */
 
-#ifdef USE_SOCKET
   if (portfd_is_socket)
     return;
-#endif
 
 #ifdef POSIX_TERMIOS
   tcgetattr(fd, &tty);
@@ -585,6 +636,7 @@ void m_setparms(int fd, char *baudr, char *par, char *bits, char *stopb,
     tty.c_cflag &= ~CSTOPB;
 
   tcsetattr(fd, TCSANOW, &tty);
+  set_speed_apple(fd, &tty);
 
   if (!rs485en)
     m_setrts(fd);
@@ -641,6 +693,15 @@ void m_set485parms(int fd, int en, int rts_on_snd, int rts_aft_snd,
 #endif
 
   ioctl(fd, TIOCSRS485, &rs485conf);
+#else
+  (void)fd;
+  (void)en;
+  (void)rts_on_snd;
+  (void)rts_aft_snd;
+  (void)rx_dur_tx;
+  (void)term_bus;
+  (void)del_rts_bef_snd;
+  (void)del_rts_aft_snd;
 #endif
 }
 

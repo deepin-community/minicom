@@ -61,9 +61,7 @@
 
 /* From: Id: sprint.c,v 1.5 1995/09/10 18:35:09 chuck Exp */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #ifndef HAVE_STDARG_H
 #error Need stdarg here!

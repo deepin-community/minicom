@@ -18,13 +18,11 @@
  * 01.01.98 dickey@clark.net: fix for a history window closing bug
  * fmg 8/20/97: Added support for Search of History Buffer
  */
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include <limits.h>
 #include <stdarg.h>
 #include <wchar.h>
+#include <assert.h>
 
 #include "port.h"
 #include "minicom.h"
@@ -72,19 +70,19 @@ static const char *TS, *FS, *DS;
 #endif
 
 /* Special characters */
-static char D_UL;
-static char D_HOR;
-static char D_UR;
-static char D_LL;
-static char D_VER;
-static char D_LR;
+static unsigned char D_UL;
+static unsigned char D_HOR;
+static unsigned char D_UR;
+static unsigned char D_LL;
+static unsigned char D_VER;
+static unsigned char D_LR;
 
-static char S_UL;
-static char S_HOR;
-static char S_UR;
-static char S_LL;
-static char S_VER;
-static char S_LR;
+static unsigned char S_UL;
+static unsigned char S_HOR;
+static unsigned char S_UR;
+static unsigned char S_LL;
+static unsigned char S_VER;
+static unsigned char S_LR;
 
 static char _bufstart[BUFFERSIZE];
 static char *_bufpos = _bufstart;
@@ -1046,15 +1044,16 @@ void mc_wdrawelm(WIN *w, int y, ELM *e)
  * 'accumulate' one line of ELM's into a string
  * WHY: need this in search function to see if line contains search pattern
  */
-void mc_wdrawelm_var(WIN *w, ELM *e, wchar_t *buf)
+void mc_wdrawelm_var(WIN *w, ELM *e, wchar_t **buf)
 {
-  int x, c = 0;
+  int sz = w->x2 - w->x1 + 2;
+  *buf = malloc(sizeof(**buf) * sz);
+  assert(*buf);
 
-  /* MARK updated 02/17/94 - Fixes bug, to do all 80 cols, not 79 cols */
-  for (x = w->x1; x <= w->x2; x++) {
-    buf[c++] = e->value;
-    e++;
-  }
+  (*buf)[sz - 1] = 0;
+
+  for (int c = 0; c < sz - 1; c++, e++)
+    (*buf)[c] = e->value;
 }
 
 /*
@@ -1492,6 +1491,10 @@ void mc_winclr(WIN *w)
 
 void mc_clear_window_simple(WIN *w)
 {
+    if (w == NULL) {
+        return;
+    }
+
   int x = 0, y = 0;
   _colson(us->color);
   _gotoxy(0, 0);

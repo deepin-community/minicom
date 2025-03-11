@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: minicom 2.6.1.90\n"
 "Report-Msgid-Bugs-To: minicom-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2021-01-01 13:47+0100\n"
+"POT-Creation-Date: 2021-12-11 20:36+0100\n"
 "PO-Revision-Date: 2013-02-12 23:37+0800\n"
 "Last-Translator: Wei-Lun Chao <bluebat@member.fsf.org>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -36,7 +36,7 @@ msgid " C - Log file transfers        :"
 msgstr " C - 檔案傳輸記錄              :"
 
 #: src/config.c:249 src/config.c:303 src/config.c:554 src/config.c:719
-#: src/config.c:1271 src/dial.c:1184
+#: src/config.c:1317 src/dial.c:1186
 msgid "Change which setting?"
 msgstr "變更設定？"
 
@@ -68,7 +68,7 @@ msgstr " E - Kermit 程式        :"
 msgid " F - Logging options"
 msgstr " F - 記錄選項"
 
-#: src/config.c:356 src/rwconf.c:104 src/rwconf.c:137 src/rwconf.c:138
+#: src/config.c:356 src/rwconf.c:104 src/rwconf.c:137
 msgid "Yes"
 msgstr "是 "
 
@@ -264,111 +264,124 @@ msgstr "數據機和撥打參數設定"
 msgid "    Return or Esc to exit. Edit A+B to get defaults."
 msgstr "    Return 或 Esc 以離開。編輯 A+B 以提取預設值。"
 
-#: src/config.c:914
-msgid " A - Command key is         :"
-msgstr " A - 命令按鍵是             :"
-
-#: src/config.c:915
-msgid " B - Backspace key sends    :"
-msgstr " B - 退格鍵發送             :"
-
-#: src/config.c:916
+#: src/config.c:909
 msgid " C - Status line is         :"
 msgstr " C - 狀態列是               :"
 
-#: src/config.c:917
-msgid " D - Alarm sound            :"
-msgstr " D - 警報聲音               :"
-
-#: src/config.c:918
+#: src/config.c:910
 msgid " E - Foreground Color (menu):"
 msgstr " E - 前景顏色 (選單)        :"
 
-#: src/config.c:919
+#: src/config.c:911
 msgid " F - Background Color (menu):"
 msgstr " F - 背景顏色 (選單)        :"
 
-#: src/config.c:920
+#: src/config.c:912
 msgid " G - Foreground Color (term):"
 msgstr " G - 前景顏色 (用語)        :"
 
-#: src/config.c:921
+#: src/config.c:913
 msgid " H - Background Color (term):"
 msgstr " H - 背景顏色 (用語)        :"
 
-#: src/config.c:922
+#: src/config.c:914
 msgid " I - Foreground Color (stat):"
 msgstr " I - 前景顏色 (狀態)        :"
 
-#: src/config.c:923
+#: src/config.c:915
 msgid " J - Background Color (stat):"
 msgstr " J - 背景顏色 (狀態)        :"
 
-#: src/config.c:924
-msgid " K - History Buffer Size    :"
-msgstr " K - 歷史緩衝區大小         :"
-
-#: src/config.c:925
-msgid " L - Macros file            :"
-msgstr " L - 巨集檔案               :"
-
-#: src/config.c:926
-msgid " N - Macros enabled         :"
-msgstr " N - 啟用巨集功能           :"
-
-#: src/config.c:927
-msgid " O - Character conversion   :"
-msgstr " O - 字元轉換               :"
-
-#: src/config.c:928
+#: src/config.c:916
 msgid " P - Add linefeed           :"
 msgstr " P - 加入換列字元           :"
 
-#: src/config.c:929
+#: src/config.c:917
 msgid " Q - Local echo             :"
 msgstr " Q - 本機回應               :"
 
-#: src/config.c:930
+#: src/config.c:918
 msgid " R - Line Wrap              :"
 msgstr " R - 自動折列               :"
 
-#: src/config.c:931
+#: src/config.c:919
 msgid " S - Hex Display            :"
 msgstr " S - 十六進位顯示           :"
 
-#: src/config.c:932
+#: src/config.c:920
 msgid " T - Add carriage return    :"
 msgstr " T - 加入換列字元           :"
 
-#: src/config.c:933 src/config.c:1692
+#: src/config.c:921
+#, fuzzy
+msgid " U - Line Timestamp         :"
+msgstr " R - 自動折列               :"
+
+#: src/config.c:922 src/config.c:1133 src/config.c:1740
 msgid "Change which setting?  (Esc to exit)"
 msgstr "變更設定？ (ESC 離開)"
 
-#: src/config.c:937 src/config.c:1457
-msgid "Screen and keyboard"
-msgstr "螢幕和鍵盤"
+#: src/config.c:926 src/config.c:1504
+msgid "Screen"
+msgstr ""
 
-#: src/config.c:956
-msgid " M - Edit Macros\n"
-msgstr " M - 編輯巨集\n"
-
-#: src/config.c:984
-msgid "You can't change colors in black and white mode"
-msgstr "您無法在黑白模式中變更顏色"
-
-#: src/config.c:996
+#: src/config.c:967
 msgid "Menu foreground == background color, change!"
 msgstr "選單前景 == 背景顏色，變更！"
 
-#: src/config.c:1002
+#: src/config.c:973
 msgid "Terminal foreground == background color, change!"
 msgstr "終端機前景 == 背景顏色，變更！"
 
-#: src/config.c:1012
+#: src/config.c:985 src/config.c:1370
+msgid "disabled"
+msgstr "關閉"
+
+#: src/config.c:988 src/config.c:1373 src/rwconf.c:136
+msgid "enabled"
+msgstr "啟用"
+
+#: src/config.c:1126
+msgid " A - Command key is         :"
+msgstr " A - 命令按鍵是             :"
+
+#: src/config.c:1127
+msgid " B - Backspace key sends    :"
+msgstr " B - 退格鍵發送             :"
+
+#: src/config.c:1128
+msgid " D - Alarm sound            :"
+msgstr " D - 警報聲音               :"
+
+#: src/config.c:1129
+msgid " K - History Buffer Size    :"
+msgstr " K - 歷史緩衝區大小         :"
+
+#: src/config.c:1130
+msgid " L - Macros file            :"
+msgstr " L - 巨集檔案               :"
+
+#: src/config.c:1131
+msgid " N - Macros enabled         :"
+msgstr " N - 啟用巨集功能           :"
+
+#: src/config.c:1132
+msgid " O - Character conversion   :"
+msgstr " O - 字元轉換               :"
+
+#: src/config.c:1137 src/config.c:1505
+msgid "Keyboard and Misc"
+msgstr ""
+
+#: src/config.c:1144
+msgid " M - Edit Macros\n"
+msgstr " M - 編輯巨集\n"
+
+#: src/config.c:1172
 msgid "History Buffer Size"
 msgstr "歷史緩衝區大小"
 
-#: src/config.c:1014
+#: src/config.c:1174
 #, fuzzy
 msgid ""
 "\n"
@@ -385,11 +398,11 @@ msgstr ""
 "\n"
 "                按下任一鍵繼續…"
 
-#: src/config.c:1030
+#: src/config.c:1192
 msgid "Program new command key"
 msgstr "程式新命令鍵"
 
-#: src/config.c:1032
+#: src/config.c:1194
 msgid ""
 "\n"
 " Press the new command key. If you want to use\n"
@@ -411,203 +424,195 @@ msgstr ""
 "\n"
 " 按下新的指令鍵: "
 
-#: src/config.c:1041
+#: src/config.c:1203
 msgid "Meta-8th bit "
 msgstr "中繼第八位元 "
 
-#: src/config.c:1043
+#: src/config.c:1205
 msgid "Escape (Meta)"
 msgstr "退出 (中繼)"
 
-#: src/config.c:1076 src/config.c:1324
-msgid "disabled"
-msgstr "關閉"
-
-#: src/config.c:1079 src/config.c:1327 src/rwconf.c:136
-msgid "enabled"
-msgstr "啟用"
-
-#: src/config.c:1194
+#: src/config.c:1266
 msgid "ERROR: you do not have permission to create a file there!"
 msgstr "錯誤: 您無權在那裡建立檔案！"
 
-#: src/config.c:1200
+#: src/config.c:1272
 #, c-format
 msgid "ERROR: cannot open macro file %s"
 msgstr "錯誤: 無法開啟巨集檔 %s"
 
-#: src/config.c:1206
+#: src/config.c:1278
 msgid "Reading macros"
 msgstr "讀取巨集"
 
-#: src/config.c:1265
+#: src/config.c:1311
 msgid " A -      Terminal emulation :"
 msgstr " A -      終端機模擬         :"
 
-#: src/config.c:1266
+#: src/config.c:1312
 msgid " B -     Backspace key sends :"
 msgstr " B -     退格鍵發送          :"
 
-#: src/config.c:1267
+#: src/config.c:1313
 msgid " C -          Status line is :"
 msgstr " C -          狀態列是       :"
 
-#: src/config.c:1268
+#: src/config.c:1314
 msgid " D -   Newline tx delay (ms) :"
 msgstr " D -   新列字元 tx 延遲 (ms) :"
 
-#: src/config.c:1269
+#: src/config.c:1315
 msgid " E -          ENQ answerback :"
 msgstr " E -          ENQ 回應       :"
 
-#: src/config.c:1270
+#: src/config.c:1316
 msgid " F - Character tx delay (ms) :"
 msgstr " F - 字元 tx 延遲 (ms)       :"
 
-#: src/config.c:1274
+#: src/config.c:1320
 msgid "Terminal settings"
 msgstr "終端機設定"
 
-#: src/config.c:1378
+#: src/config.c:1424
 #, c-format
 msgid "Cannot write to %s"
 msgstr "無法寫入至 %s"
 
-#: src/config.c:1385
+#: src/config.c:1431
 msgid "Configuration saved"
 msgstr "設定檔儲存"
 
-#: src/config.c:1400
+#: src/config.c:1446
 msgid "ERROR: Macros have changed but no filename is set!"
 msgstr "錯誤: 巨集已變更但是沒有設定任何檔名！"
 
-#: src/config.c:1404
+#: src/config.c:1450
 #, c-format
 msgid "Cannot write macros file %s"
 msgstr "無法寫入巨集檔案 %s"
 
-#: src/config.c:1410
+#: src/config.c:1456
 msgid "Macros saved"
 msgstr "巨集已儲存"
 
-#: src/config.c:1427
+#: src/config.c:1473
 msgid "Give name to save this configuration?"
 msgstr "給定儲存檔名稱？"
 
-#: src/config.c:1453
+#: src/config.c:1500
 msgid "Filenames and paths"
 msgstr "檔名和路徑"
 
-#: src/config.c:1454
+#: src/config.c:1501
 msgid "File transfer protocols"
 msgstr "檔案傳輸協定"
 
-#: src/config.c:1455
+#: src/config.c:1502
 msgid "Serial port setup"
 msgstr "序列埠設定"
 
-#: src/config.c:1456
+#: src/config.c:1503
 msgid "Modem and dialing"
 msgstr "數據機和撥接"
 
-#: src/config.c:1459
+#: src/config.c:1507
 msgid "Save setup as.."
 msgstr "另存設定為…"
 
-#: src/config.c:1460
+#: src/config.c:1508
 msgid "Exit"
 msgstr "離開本畫面"
 
-#: src/config.c:1461
+#: src/config.c:1509
 msgid "Exit from Minicom"
 msgstr "離開 Minicom"
 
-#: src/config.c:1477
+#: src/config.c:1525
 #, c-format
 msgid "Save setup as %s"
 msgstr "儲存設定為 %s"
 
-#: src/config.c:1483
+#: src/config.c:1531
 msgid "configuration"
 msgstr "設定"
 
-#: src/config.c:1492
+#: src/config.c:1540
 msgid "BLACK"
 msgstr "黑"
 
-#: src/config.c:1492
+#: src/config.c:1540
 msgid "RED"
 msgstr "紅"
 
-#: src/config.c:1492
+#: src/config.c:1540
 msgid "GREEN"
 msgstr "綠"
 
-#: src/config.c:1492
+#: src/config.c:1540
 msgid "YELLOW"
 msgstr "黃"
 
-#: src/config.c:1493
+#: src/config.c:1541
 msgid "BLUE"
 msgstr "藍"
 
-#: src/config.c:1493
+#: src/config.c:1541
 msgid "MAGENTA"
 msgstr "洋紅"
 
-#: src/config.c:1493
+#: src/config.c:1541
 msgid "CYAN"
 msgstr "青"
 
-#: src/config.c:1493
+#: src/config.c:1541
 msgid "WHITE"
 msgstr "白"
 
-#: src/config.c:1523
+#: src/config.c:1571
 msgid "Comm Parameters"
 msgstr "通訊參數"
 
-#: src/config.c:1528
+#: src/config.c:1576
 msgid " Speed            Parity      Data\n"
 msgstr " 速度             同位        資料\n"
 
-#: src/config.c:1529
+#: src/config.c:1577
 msgid " A: <next>        L: None     S: 5\n"
 msgstr " A: <next>        L: 無       S: 5\n"
 
-#: src/config.c:1530
+#: src/config.c:1578
 msgid " B: <prev>        M: Even     T: 6\n"
 msgstr " B: <prev>        M: 甚至     T: 6\n"
 
-#: src/config.c:1531
+#: src/config.c:1579
 msgid " C:   9600        N: Odd      U: 7\n"
 msgstr " C:   9600        N: 奇數     U: 7\n"
 
-#: src/config.c:1532
+#: src/config.c:1580
 msgid " D:  38400        O: Mark     V: 8\n"
 msgstr " D:  38400        O: 標記     V: 8\n"
 
-#: src/config.c:1533
+#: src/config.c:1581
 msgid " E: 115200        P: Space\n"
 msgstr " E: 115200        P: 空格\n"
 
-#: src/config.c:1535
+#: src/config.c:1583
 msgid " Stopbits\n"
 msgstr " 停止位元\n"
 
-#: src/config.c:1536
+#: src/config.c:1584
 msgid " W: 1             Q: 8-N-1\n"
 msgstr " W: 1             Q: 8-N-1\n"
 
-#: src/config.c:1537
+#: src/config.c:1585
 msgid " X: 2             R: 7-E-1\n"
 msgstr " X: 2             R: 7-E-1\n"
 
-#: src/config.c:1539
+#: src/config.c:1587
 msgid " K: Current\n"
 msgstr " K: 目前的\n"
 
-#: src/config.c:1542
+#: src/config.c:1590
 msgid ""
 "\n"
 " Choice, or <Enter> to exit? "
@@ -615,48 +620,48 @@ msgstr ""
 "\n"
 " 選擇，或按 <Enter> 離開？ "
 
-#: src/config.c:1550
+#: src/config.c:1598
 #, c-format
 msgid "Current: %5s %s%s%s  "
 msgstr "目前: %5s %s%s%s  "
 
-#: src/config.c:1695
+#: src/config.c:1743
 #, fuzzy
 msgid "F1 to F12 Macros"
 msgstr "F1 到 F10 的巨集"
 
-#: src/config.c:1716
+#: src/config.c:1764
 msgid " (LEGEND: ^M = C-M, ^L = C-L, ^G = C-G, ^R = C-R, ^~ = pause 1 second,"
 msgstr " (鍵例: ^M = C-M, ^L = C-L, ^G = C-G, ^R = C-R, ^~ = 暫停 1 秒，"
 
-#: src/config.c:1718
+#: src/config.c:1766
 msgid "  \\u = username, \\p = password, \\\\ = \\, \\e = toggle echo, "
 msgstr " \\u = 使用者名稱，\\p = 密碼，\\\\ = \\，\\e = 切換回應，"
 
-#: src/config.c:1720
+#: src/config.c:1768
 msgid ""
 "  \\l = toggle LF, \\bX1..Xn<sp> = change baud rate. Example: \"\\beq \""
 msgstr "  \\l = 切換 LF，\\bX1..Xn<sp> = 變更鮑率。範例:「\\beq 」"
 
-#: src/config.c:1722
+#: src/config.c:1770
 msgid ""
 "  = 115200 8N1. (See the \"Comm Parameters\" menu for valid values of X.))"
 msgstr "  = 115200 8N1。(參看「Comm 參數」選單以了解 X 的有效值。))"
 
-#: src/config.c:1737
+#: src/config.c:1785
 msgid "CHANGED"
 msgstr "已變更"
 
-#: src/config.c:1836
+#: src/config.c:1884
 msgid "Character conversion"
 msgstr "字元轉換"
 
-#: src/config.c:1841
+#: src/config.c:1889
 msgid " char    in out    char    in out    char    in out    char    in out\n"
 msgstr ""
 " 字元    入 出     字元    入 出     字元    入 出     字元    入 出 \n"
 
-#: src/config.c:1863
+#: src/config.c:1911
 msgid ""
 "\n"
 " A - load table\tB - save table"
@@ -664,12 +669,12 @@ msgstr ""
 "\n"
 " A - 載入表格  \tB - 儲存表格"
 
-#: src/config.c:1865
+#: src/config.c:1913
 #, c-format
 msgid "\tfile:%s"
 msgstr "\t檔案:%s"
 
-#: src/config.c:1866
+#: src/config.c:1914
 msgid ""
 "\n"
 " C - edit char\tD - next screen\tE - prev screen\n"
@@ -677,50 +682,50 @@ msgstr ""
 "\n"
 " C - 編輯字元 \tD - 下一個螢幕 \tE - 上一個螢幕\n"
 
-#: src/config.c:1867
+#: src/config.c:1915
 #, c-format
 msgid " F - convert capture: %s\n"
 msgstr " F - 轉換擷取: %s\n"
 
-#: src/config.c:1882
+#: src/config.c:1930
 #, c-format
 msgid "Load file: %s"
 msgstr "載入檔案: %s"
 
-#: src/config.c:1894
+#: src/config.c:1942
 #, c-format
 msgid "Save as file: %s"
 msgstr "存檔為: %s"
 
-#: src/config.c:1905
+#: src/config.c:1953
 msgid "Character to be edited: "
 msgstr "將要編輯的字元: "
 
-#: src/config.c:1913 src/config.c:1925 src/config.c:1937
+#: src/config.c:1961 src/config.c:1973 src/config.c:1985
 msgid "Input character ascii value 0-255"
 msgstr "輸入字元的 ASCII 值 0-255"
 
-#: src/config.c:1919
+#: src/config.c:1967
 #, c-format
 msgid "Change input to: %s"
 msgstr "改變輸入至: %s"
 
-#: src/config.c:1931
+#: src/config.c:1979
 #, c-format
 msgid "Change output to: %s"
 msgstr "改變輸出至: %s"
 
-#: src/config.c:1970
+#: src/config.c:2018
 #, c-format
 msgid "Cannot open conversion table %s"
 msgstr "無法開啟轉換表 %s"
 
-#: src/config.c:1976
+#: src/config.c:2024
 #, fuzzy, c-format
 msgid "Cannot read conversion table %s"
 msgstr "無法寫入轉換表 %s"
 
-#: src/config.c:1989
+#: src/config.c:2037
 #, c-format
 msgid "Cannot write conversion table %s"
 msgstr "無法寫入轉換表 %s"
@@ -820,127 +825,127 @@ msgstr "已連通。按任意鍵繼續"
 msgid "Timeout"
 msgstr "逾時"
 
-#: src/dial.c:873
+#: src/dial.c:875
 msgid "Manually entered number"
 msgstr "手動輸入號碼"
 
-#: src/dial.c:882
+#: src/dial.c:884
 msgid "Cannot open ~/.dialdir: permission denied"
 msgstr "無法開啟 ~/.dialdir: 權限被拒"
 
-#: src/dial.c:904
+#: src/dial.c:906
 #, fuzzy
 msgid "Failed to read dialing directory\n"
 msgstr "讀取撥接電話簿時耗盡記憶體"
 
-#: src/dial.c:939
+#: src/dial.c:941
 msgid "Phonelist garbled (unknown version?)"
 msgstr "電話列表錯亂 (不明版本？)"
 
-#: src/dial.c:947 src/dial.c:956
+#: src/dial.c:949 src/dial.c:958
 msgid "Phonelist corrupted"
 msgstr "電話列表損壞"
 
-#: src/dial.c:962
+#: src/dial.c:964
 msgid "Unknown dialing directory version"
 msgstr "不明的撥接電話簿版本"
 
-#: src/dial.c:970
+#: src/dial.c:972
 msgid "Phonelist garbled (?)"
 msgstr "電話列表錯亂 (？)"
 
-#: src/dial.c:992
+#: src/dial.c:994
 msgid "Out of memory while reading dialing directory"
 msgstr "讀取撥接電話簿時耗盡記憶體"
 
-#: src/dial.c:1022
+#: src/dial.c:1024
 #, fuzzy
 msgid "Failed to read phonelist\n"
 msgstr "讀取撥接電話簿時耗盡記憶體"
 
-#: src/dial.c:1044
+#: src/dial.c:1046
 #, c-format
 msgid "Converted dialdir to new format, old saved as %s.v%hd"
 msgstr "已轉換撥接電話簿為新格式，舊版已儲存為 %s.v%hd"
 
-#: src/dial.c:1079
+#: src/dial.c:1081
 msgid "Cannot open ~/.dialdir for writing!"
 msgstr "無法開啟 ~/.dialdir 用於寫入！"
 
-#: src/dial.c:1095 src/dial.c:1107
+#: src/dial.c:1097 src/dial.c:1109
 msgid "Error writing to ~/.dialdir!"
 msgstr "寫入 ~/.dialdir 時發生錯誤！"
 
-#: src/dial.c:1172
+#: src/dial.c:1174
 msgid " A -  Name                :"
 msgstr " A -  名稱                :"
 
-#: src/dial.c:1173
+#: src/dial.c:1175
 msgid " B -  Number              :"
 msgstr " B -  號碼                :"
 
-#: src/dial.c:1174
+#: src/dial.c:1176
 msgid " C -  Dial string #       :"
 msgstr " C -  撥號字串 #          :"
 
-#: src/dial.c:1175
+#: src/dial.c:1177
 msgid " D -  Local echo          :"
 msgstr " D -  本地回應            :"
 
-#: src/dial.c:1176
+#: src/dial.c:1178
 msgid " E -  Script              :"
 msgstr " E -  指令稿              :"
 
-#: src/dial.c:1177
+#: src/dial.c:1179
 msgid " F -  Username            :"
 msgstr " F -  使用者名稱          :"
 
-#: src/dial.c:1178
+#: src/dial.c:1180
 msgid " G -  Password            :"
 msgstr " G -  密碼                :"
 
-#: src/dial.c:1179
+#: src/dial.c:1181
 msgid " H -  Terminal Emulation  :"
 msgstr " H -  終端機模擬          :"
 
-#: src/dial.c:1180
+#: src/dial.c:1182
 msgid " I -  Backspace key sends :"
 msgstr " I -  退格鍵發送          :"
 
-#: src/dial.c:1181
+#: src/dial.c:1183
 msgid " J -  Linewrap            :"
 msgstr " J -  折列                :"
 
-#: src/dial.c:1182
+#: src/dial.c:1184
 msgid " K -  Line Settings       :"
 msgstr " K -  列設定值            :"
 
-#: src/dial.c:1183
+#: src/dial.c:1185
 msgid " L -  Conversion table    :"
 msgstr " L -  轉換表格            :"
 
-#: src/dial.c:1196 src/dial.c:1268 src/dial.c:1275
+#: src/dial.c:1198 src/dial.c:1270 src/dial.c:1277
 msgid "Delete"
 msgstr "刪除"
 
-#: src/dial.c:1196 src/dial.c:1268 src/dial.c:1275
+#: src/dial.c:1198 src/dial.c:1270 src/dial.c:1277
 msgid "Backspace"
 msgstr "退格"
 
-#: src/dial.c:1198 src/dial.c:1270 src/dial.c:1280
+#: src/dial.c:1200 src/dial.c:1272 src/dial.c:1282
 msgid "On"
 msgstr "開"
 
-#: src/dial.c:1198 src/dial.c:1270 src/dial.c:1280
+#: src/dial.c:1200 src/dial.c:1272 src/dial.c:1282
 msgid "Off"
 msgstr "關"
 
-#: src/dial.c:1202
+#: src/dial.c:1204
 #, c-format
 msgid "      Last dialed         : %s %s\n"
 msgstr "      最近一次撥號        : %s %s\n"
 
-#: src/dial.c:1203
+#: src/dial.c:1205
 #, c-format
 msgid "      Times on            : %d"
 msgstr "      次數                : %d"
@@ -948,72 +953,72 @@ msgstr "      次數                : %d"
 #. TRANSLATORS: Translation of each of these menu items should not be
 #. * longer than 7 characters. The upper-case letter is a shortcut,
 #. * so keep them unique and ASCII; 'h', 'j', 'k', 'l' are reserved
-#: src/dial.c:1304
+#: src/dial.c:1306
 msgid "Dial"
 msgstr "撥接"
 
-#: src/dial.c:1304
+#: src/dial.c:1306
 msgid "Find"
 msgstr "尋找"
 
-#: src/dial.c:1304
+#: src/dial.c:1306
 msgid "Add"
 msgstr "加入"
 
-#: src/dial.c:1304
+#: src/dial.c:1306
 msgid "Edit"
 msgstr "編輯"
 
-#: src/dial.c:1304
+#: src/dial.c:1306
 msgid "Remove"
 msgstr "移除"
 
-#: src/dial.c:1304
+#: src/dial.c:1306
 msgid "moVe"
 msgstr "移動"
 
-#: src/dial.c:1305
+#: src/dial.c:1307
 msgid "Manual"
 msgstr "手動"
 
-#: src/dial.c:1451 src/file.c:72 src/minicom.c:69 src/minicom.c:72
+#: src/dial.c:1453 src/file.c:72 src/minicom.c:70 src/minicom.c:73
 msgid "   Yes  "
 msgstr "   是   "
 
-#: src/dial.c:1451 src/file.c:72 src/minicom.c:69 src/minicom.c:72
+#: src/dial.c:1453 src/file.c:72 src/minicom.c:70 src/minicom.c:73
 msgid "   No   "
 msgstr "   否   "
 
-#: src/dial.c:1544
+#: src/dial.c:1546
 #, c-format
 msgid "Entry \"%s\" not found. Enter dialdir?"
 msgstr "找不到「%s」條目。進入撥號電話簿？"
 
-#: src/dial.c:1574 src/file.c:430
+#: src/dial.c:1576 src/file.c:430
 msgid "( Escape to exit, Space to tag )"
 msgstr "( Escape 以離開，空白以標記)"
 
-#: src/dial.c:1575
+#: src/dial.c:1577
 msgid " Move entry up/down, Escape to exit"
 msgstr " 向上/向下移動條目，Escape 以離開"
 
-#: src/dial.c:1595
+#: src/dial.c:1597
 msgid "Dialing Directory"
 msgstr "撥接電話簿"
 
-#: src/dial.c:1597
+#: src/dial.c:1599
 msgid "     Name            Number            Last on      Times Script\n"
 msgstr "     名稱            號碼              最後一次     次數指令稿\n"
 
-#: src/dial.c:1771
+#: src/dial.c:1773
 msgid "Find an entry"
 msgstr "尋找項目"
 
-#: src/dial.c:1832
+#: src/dial.c:1834
 msgid "Remove entry?"
 msgstr "移除項目？"
 
-#: src/dial.c:1876
+#: src/dial.c:1878
 msgid "Enter number"
 msgstr "輸入號碼"
 
@@ -1213,63 +1218,78 @@ msgstr "部分功能 Jukka Lahtinen 1997-2000"
 msgid "i18n by Arnaldo Carvalho de Melo 1998"
 msgstr "多國語言 Arnaldo Carvalho de Melo 1998"
 
-#: src/main.c:323
+#: src/main.c:318
+#, c-format
+msgid "Lockfile %s cannot be queried (%d).\n"
+msgstr ""
+
+#: src/main.c:326
+#, c-format
+msgid "Lockfile %s owned by someone else (uid=%d).\n"
+msgstr ""
+
+#: src/main.c:336
+#, fuzzy, c-format
+msgid "Device %s is locked by someone else.\n"
+msgstr "設備 %s 已鎖定。\n"
+
+#: src/main.c:355
 #, c-format
 msgid "Lockfile is stale. Overriding it..\n"
 msgstr "鎖定檔已失去時效。要覆寫它..\n"
 
-#: src/main.c:332 src/updown.c:499
+#: src/main.c:364 src/updown.c:499
 #, c-format
 msgid "Device %s is locked.\n"
 msgstr "設備 %s 已鎖定。\n"
 
-#: src/main.c:347
+#: src/main.c:380
 #, c-format
 msgid "Could not setup for dial out.\n"
 msgstr "無法設定為撥出。\n"
 
-#: src/main.c:396
+#: src/main.c:429
 #, c-format
 msgid "minicom: cannot open %s: %s\n"
 msgstr "minicom: 無法開啟檔案 %s: %s\n"
 
-#: src/main.c:399
+#: src/main.c:432
 #, c-format
 msgid "minicom: cannot open %s. Sorry.\n"
 msgstr "minicom: 無法開啟 %s。抱歉。\n"
 
-#: src/main.c:406 src/main.c:895
+#: src/main.c:439 src/main.c:982
 #, c-format
 msgid "Cannot open %s!"
 msgstr "無法開啟 %s！"
 
-#: src/main.c:569
+#: src/main.c:602
 #, fuzzy
 msgid "%H for help | %b | %C | Minicom %V | %T | %t | %D"
 msgstr " %7.7sZ 獲得說明 |           |     | Minicom %-6.6s |       | "
 
-#: src/main.c:642
+#: src/main.c:677
 msgid "Offline"
 msgstr "離線"
 
-#: src/main.c:642
+#: src/main.c:677
 msgid "OFFLINE"
 msgstr "離線"
 
-#: src/main.c:645
+#: src/main.c:680
 msgid "Online"
 msgstr "連線"
 
-#: src/main.c:645
+#: src/main.c:680
 msgid "ONLINE"
 msgstr "連線"
 
-#: src/main.c:718
+#: src/main.c:753
 #, c-format
 msgid "Gone offline (%ld:%02ld:%02ld)"
 msgstr "已掛斷 (%ld:%02ld:%02ld)"
 
-#: src/main.c:875
+#: src/main.c:962
 msgid "Could not re-initialize window system."
 msgstr "無法重新初始化視窗系統。"
 
@@ -1278,70 +1298,70 @@ msgstr "無法重新初始化視窗系統。"
 msgid "Got signal %d"
 msgstr "得到信號 %d"
 
-#: src/minicom.c:70 src/minicom.c:71
+#: src/minicom.c:71 src/minicom.c:72
 msgid "  Close "
 msgstr "  關閉  "
 
-#: src/minicom.c:70
+#: src/minicom.c:71
 msgid " Pause  "
 msgstr " 暫停   "
 
-#: src/minicom.c:70 src/minicom.c:71
+#: src/minicom.c:71 src/minicom.c:72
 msgid "  Exit  "
 msgstr "  離開  "
 
-#: src/minicom.c:71
+#: src/minicom.c:72
 msgid " Unpause"
 msgstr " 恢復   "
 
-#: src/minicom.c:93
+#: src/minicom.c:94
 msgid "Hang-up line?"
 msgstr "掛斷連線？"
 
-#: src/minicom.c:104
+#: src/minicom.c:105
 #, c-format
 msgid "Killed by signal %d !\n"
 msgstr "由信號 %d 所中止！\n"
 
-#: src/minicom.c:128
+#: src/minicom.c:129
 msgid "Suspended. Type \"fg\" to resume.\n"
 msgstr "已懸置。輸入「fg」以再續。\n"
 
-#: src/minicom.c:147
+#: src/minicom.c:148
 msgid "SHELL variable not set"
 msgstr "SHELL 環境變數沒有設定"
 
-#: src/minicom.c:151 src/updown.c:314 src/updown.c:527 src/updown.c:729
+#: src/minicom.c:152 src/updown.c:314 src/updown.c:527 src/updown.c:729
 msgid "Out of memory: could not fork()"
 msgstr "記憶體耗盡: 無法 fork()"
 
-#: src/minicom.c:161
+#: src/minicom.c:162
 msgid "Shelled out. Type \"exit\" to return.\n"
 msgstr "進入子 Shell。輸入「exit」以返回。\n"
 
-#: src/minicom.c:274
+#: src/minicom.c:283
 msgid "SEARCH FOR (ESC=Exit)"
 msgstr "搜尋 (ESC=離開)"
 
-#: src/minicom.c:324 src/minicom.c:345
+#: src/minicom.c:330 src/minicom.c:358
 msgid "Search Wrapping Around to Start!"
 msgstr "啟始時搜尋四周！"
 
-#: src/minicom.c:470
+#: src/minicom.c:484
 msgid ""
 "HISTORY: U=Up D=Down F=PgDn B=PgUp s=Srch S=CaseLess N=Next C=Cite ESC=Exit "
 msgstr ""
 "歷史: U=上筆 D=下筆 F=下頁 B=上頁 s=搜尋 S=無大小寫 N=下一個 C=引用 ESC=離開"
 
-#: src/minicom.c:510
+#: src/minicom.c:524
 msgid "History buffer Disabled!"
 msgstr "歷史緩衝區已停用！"
 
-#: src/minicom.c:515
+#: src/minicom.c:529
 msgid "History buffer empty!"
 msgstr "歷史緩衝區為空！"
 
-#: src/minicom.c:573
+#: src/minicom.c:587
 msgid ""
 "No previous search!\n"
 "  Please 's' or 'S' first!"
@@ -1349,29 +1369,29 @@ msgstr ""
 "沒有前一個搜尋！\n"
 "  請先按 s 或 S！"
 
-#: src/minicom.c:730 src/minicom.c:773
+#: src/minicom.c:748 src/minicom.c:791
 msgid ""
 "  CITATION: ENTER=select start line ESC=exit                               "
 msgstr ""
 "  引用: ENTER=選取開始列 ESC=離開                                          "
 
-#: src/minicom.c:747
+#: src/minicom.c:765
 msgid ""
 "  CITATION: ENTER=select end line ESC=exit                                 "
 msgstr ""
 "  引用: ENTER=選取結束列 ESC=離開                                          "
 
-#: src/minicom.c:807
+#: src/minicom.c:875
 #, c-format
 msgid "Wrong option in environment MINICOM=\"%s\"\n"
 msgstr "錯誤的選項於環境變數 MINICOM=「%s」\n"
 
-#: src/minicom.c:808
+#: src/minicom.c:876
 #, c-format
 msgid "Type \"minicom %s\" for help.\n"
 msgstr "鍵入 \"minicom %s\" 以顯示說明。\n"
 
-#: src/minicom.c:818
+#: src/minicom.c:886
 #, fuzzy, c-format
 msgid ""
 "Usage: %s [OPTION]... [configuration]\n"
@@ -1437,17 +1457,17 @@ msgstr ""
 "\n"
 "這些選項也可以被指定於 MINICOM 環境變數中。\n"
 
-#: src/minicom.c:849
+#: src/minicom.c:917
 #, c-format
 msgid "This variable is currently set to \"%s\".\n"
 msgstr "這個變數目前被設定為「%s」。\n"
 
-#: src/minicom.c:851
+#: src/minicom.c:919
 #, c-format
 msgid "This variable is currently unset.\n"
 msgstr "這個變數目前未被設定。\n"
 
-#: src/minicom.c:854
+#: src/minicom.c:922
 #, c-format
 msgid ""
 "The configuration directory for the access file and the configurations\n"
@@ -1460,22 +1480,47 @@ msgstr ""
 "\n"
 "錯誤通報給 <minicom-devel@lists.alioth.debian.org>。\n"
 
-#: src/minicom.c:968
+#: src/minicom.c:1037
 #, c-format
 msgid "Activating iconv failed with: %s (%d)\n"
 msgstr ""
 
-#: src/minicom.c:1250
+#: src/minicom.c:1185
+msgid "Timestamp OFF"
+msgstr "關閉時間戳記"
+
+#: src/minicom.c:1188
+msgid "Timestamp every line (simple)"
+msgstr "每列時間戳記 (簡單)"
+
+#: src/minicom.c:1191
+msgid "Timestamp every line (extended)"
+msgstr "每列時間戳記 (進階)"
+
+#: src/minicom.c:1194
+msgid "Timestamp lines every second"
+msgstr "每秒時間戳記列"
+
+#: src/minicom.c:1197
+#, fuzzy
+msgid "Timestamp delta between lines"
+msgstr "每列時間戳記 (簡單)"
+
+#: src/minicom.c:1200
+msgid "Timestamp relative to trigger pattern"
+msgstr ""
+
+#: src/minicom.c:1367
 #, c-format
 msgid "%s version %s"
 msgstr "%s 版本 %s"
 
-#: src/minicom.c:1252
+#: src/minicom.c:1369
 #, c-format
 msgid " (compiled %s)"
 msgstr "(已編譯 %s)"
 
-#: src/minicom.c:1255
+#: src/minicom.c:1372
 #, c-format
 msgid ""
 "Copyright (C) Miquel van Smoorenburg.\n"
@@ -1484,7 +1529,7 @@ msgstr ""
 "版權所有 (C) Miquel van Smoorenburg。\n"
 "\n"
 
-#: src/minicom.c:1256
+#: src/minicom.c:1373
 #, c-format
 msgid ""
 "This program is free software; you can redistribute it and/or\n"
@@ -1494,55 +1539,55 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/minicom.c:1278
+#: src/minicom.c:1395
 #, c-format
 msgid "minicom: argument to -p must be a pty\n"
 msgstr "minicom: -p 之後的引數必須是一個 pty\n"
 
-#: src/minicom.c:1343
+#: src/minicom.c:1460
 #, fuzzy, c-format
 msgid "Cannot open capture file\n"
 msgstr "無法開啟截取檔案"
 
-#: src/minicom.c:1361
+#: src/minicom.c:1478
 #, c-format
 msgid "Invalid buffering mode '%s'\n"
 msgstr ""
 
-#: src/minicom.c:1429
+#: src/minicom.c:1548
 msgid "You don't exist. Go away.\n"
 msgstr "您並不存在。請走開。\n"
 
-#: src/minicom.c:1506
+#: src/minicom.c:1629
 msgid "Sorry. Your screen is too small.\n"
 msgstr "抱歉。您的螢幕太小。\n"
 
-#: src/minicom.c:1581
+#: src/minicom.c:1707
 msgid "Welcome to minicom"
 msgstr "歡迎使用 minicom"
 
-#: src/minicom.c:1582
+#: src/minicom.c:1708
 msgid "OPTIONS"
 msgstr "選項"
 
-#: src/minicom.c:1584
+#: src/minicom.c:1710
 msgid "Compiled on"
 msgstr "編譯於"
 
-#: src/minicom.c:1600
+#: src/minicom.c:1726
 msgid "Port"
 msgstr "通訊埠"
 
-#: src/minicom.c:1604
+#: src/minicom.c:1730
 msgid "Using character set conversion"
 msgstr "使用字元集轉換"
 
-#: src/minicom.c:1605
+#: src/minicom.c:1731
 #, fuzzy
 msgid " (failed test)"
 msgstr "(已編譯 %s)"
 
-#: src/minicom.c:1606
+#: src/minicom.c:1732
 #, c-format
 msgid ""
 "\n"
@@ -1553,121 +1598,100 @@ msgstr ""
 "按 %sZ 說明特殊鍵 %c\n"
 "\n"
 
-#: src/minicom.c:1627
+#: src/minicom.c:1753
 msgid "Add linefeed ON"
 msgstr "開啟加入換列鍵"
 
-#: src/minicom.c:1627
+#: src/minicom.c:1753
 msgid "Add linefeed OFF"
 msgstr "關閉加入換列鍵"
 
-#: src/minicom.c:1632
+#: src/minicom.c:1758
 msgid "Add carriage return ON"
 msgstr "開啟加入換列字元"
 
-#: src/minicom.c:1632
+#: src/minicom.c:1758
 msgid "Add carriage return OFF"
 msgstr "關閉加入換列字元"
 
-#: src/minicom.c:1637
+#: src/minicom.c:1763
 msgid "Local echo ON"
 msgstr "開啟本地回應"
 
-#: src/minicom.c:1637
+#: src/minicom.c:1763
 msgid "Local echo OFF"
 msgstr "關閉本地回應"
 
-#: src/minicom.c:1656
+#: src/minicom.c:1782
 msgid "You are online. Really initialize?"
 msgstr "您正在線上。真的要初始化？"
 
-#: src/minicom.c:1663
+#: src/minicom.c:1789
 msgid "Leave without reset?"
 msgstr "離開而不重置？"
 
-#: src/minicom.c:1667 src/minicom.c:1685
+#: src/minicom.c:1793 src/minicom.c:1811
 msgid "Save macros?"
 msgstr "儲存巨集？"
 
-#: src/minicom.c:1677
+#: src/minicom.c:1803
 msgid "Leave Minicom?"
 msgstr "離開 Minicom？"
 
-#: src/minicom.c:1696
+#: src/minicom.c:1822
 msgid "Capture to which file? "
 msgstr "截取至那一個檔案？"
 
-#: src/minicom.c:1700
+#: src/minicom.c:1826
 msgid "Cannot open capture file"
 msgstr "無法開啟截取檔案"
 
-#: src/minicom.c:1706 src/minicom.c:1715
+#: src/minicom.c:1832 src/minicom.c:1841
 msgid "Capture file"
 msgstr "截取的檔案"
 
-#: src/minicom.c:1749
+#: src/minicom.c:1875
 msgid "Linewrap ON"
 msgstr "開啟折列"
 
-#: src/minicom.c:1749
+#: src/minicom.c:1875
 msgid "Linewrap OFF"
 msgstr "關閉折列"
 
-#: src/minicom.c:1758
-msgid "Timestamp OFF"
-msgstr "關閉時間戳記"
-
-#: src/minicom.c:1761
-msgid "Timestamp every line (simple)"
-msgstr "每列時間戳記 (簡單)"
-
-#: src/minicom.c:1764
-msgid "Timestamp every line (extended)"
-msgstr "每列時間戳記 (進階)"
-
-#: src/minicom.c:1767
-msgid "Timestamp lines every second"
-msgstr "每秒時間戳記列"
-
-#: src/minicom.c:1770
-#, fuzzy
-msgid "Timestamp delta between lines"
-msgstr "每列時間戳記 (簡單)"
-
-#: src/minicom.c:1811
+#: src/minicom.c:1918
 msgid "Quit without reset while online."
 msgstr "若在線上離開時不會重置。"
 
-#: src/rwconf.c:105 src/rwconf.c:139
+#: src/rwconf.c:105 src/rwconf.c:138 src/rwconf.c:139
 msgid "No"
 msgstr "否"
 
-#: src/rwconf.c:225
+#: src/rwconf.c:227
 #, c-format
 msgid "# Machine-generated file - use \"minicom -s\" to change parameters.\n"
 msgstr "# 電腦產生的檔案檔案 - 使用「minicom -s」以變更參數。\n"
 
-#: src/rwconf.c:227
+#: src/rwconf.c:229
 #, c-format
 msgid ""
 "# Machine-generated file - use setup menu in minicom to change parameters.\n"
 msgstr "# 電腦產生的檔案 - 使用 minicom 中的設定選單以變更參數。\n"
 
-#: src/rwconf.c:252
+#: src/rwconf.c:254
 #, c-format
 msgid "Memory allocation failed.\n"
 msgstr "記憶體配置失敗。\n"
 
-#: src/rwconf.c:321
+#: src/rwconf.c:323
 #, c-format
 msgid "** Line %d of the %s config file is unparsable.\n"
 msgstr "** 第 %d 列的 %s 組態檔案無法解析。\n"
 
-#: src/rwconf.c:322
+#: src/rwconf.c:324
 msgid "global"
 msgstr "全域"
 
-#: src/rwconf.c:322
+#: src/rwconf.c:324
 msgid "personal"
 msgstr "個人"
 
@@ -1892,40 +1916,46 @@ msgstr "變更哪一項設定？            (Enter鍵 執行, ESC鍵 停止)"
 msgid "Run a script"
 msgstr "執行一份指令稿"
 
-#: src/window.c:1888
+#: src/window.c:1894
 #, c-format
 msgid "Environment variable TERM not set\n"
 msgstr "沒有設定 TERM 環境變數\n"
 
-#: src/window.c:1894
+#: src/window.c:1900
 #, c-format
 msgid "No termcap entry for %s\n"
 msgstr "沒有 termcap 條目用於 %s\n"
 
-#: src/window.c:1897
+#: src/window.c:1903
 #, c-format
 msgid "No termcap database present!\n"
 msgstr "不具備 termcap 資料庫！\n"
 
-#: src/window.c:1905
+#: src/window.c:1911
 #, c-format
 msgid "No cursor motion capability (cm)\n"
 msgstr "沒有游標移動功能 (cm)\n"
 
-#: src/window.c:1914
+#: src/window.c:1920
 #, c-format
 msgid "Number of terminal lines unknown\n"
 msgstr "終端機橫列數量不明\n"
 
-#: src/window.c:1918
+#: src/window.c:1924
 #, c-format
 msgid "Number of terminal columns unknown\n"
 msgstr "終端機直欄數量不明\n"
 
-#: src/window.c:2056
+#: src/window.c:2062
 #, c-format
 msgid "Not enough memory\n"
 msgstr ""
+
+#~ msgid "Screen and keyboard"
+#~ msgstr "螢幕和鍵盤"
+
+#~ msgid "You can't change colors in black and white mode"
+#~ msgstr "您無法在黑白模式中變更顏色"
 
 #~ msgid "minicom: WARNING: configuration file not found, using defaults\n"
 #~ msgstr "minicom: 注意: 找不到設定檔, 使用預設設定值\n"

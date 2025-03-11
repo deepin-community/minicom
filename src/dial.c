@@ -1,6 +1,6 @@
 /*
  * dial.c	Functions to dial, retry etc. Als contains the dialing
- *		directory code, _and_ the famous tu-di-di music.
+ *		directory code.
  *
  *		This file is part of the minicom communications package,
  *		Copyright 1991-1995 Miquel van Smoorenburg.
@@ -26,10 +26,7 @@
  *   jl 01.09.99  Move entry up/down in directory
  *   jl 10.02.2000 Stopbits field added
  */
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include <stdint.h>
 #include <limits.h>
 #include <arpa/inet.h>
@@ -37,14 +34,6 @@
 #include "port.h"
 #include "minicom.h"
 #include "intl.h"
-
-#ifdef VC_MUSIC
-#  if defined(__linux__) || defined(__GLIBC__)
-#    include <sys/ioctl.h>
-#    include <sys/kd.h>
-#    include <sys/time.h>
-#  endif
-#endif
 
 enum { CURRENT_VERSION = 6 };
 
@@ -320,52 +309,6 @@ void sendbreak()
 WIN *dialwin;
 int dialtime;
 
-#ifdef VC_MUSIC
-
-/*
- * Play music until key is pressed.
- */
-void music(void)
-{
-  int x, i, k;
-  int consolefd = 0;
-  char *disp;
-
-  /* If we're in X, we have to explicitly use the console */
-  if (strncmp(getenv("TERM"), "xterm", 5) == 0 &&
-      (disp = getenv("DISPLAY")) != NULL &&
-      (strcmp(disp, ":0.0") == 0 ||
-       (strcmp(disp, ":0") == 0))) {
-    consolefd = open("/dev/console", O_WRONLY);
-    if (consolefd < 0) consolefd = 0;
-  }
-
-  /* Tell keyboard handler what we want. */
-  keyboard(KSIGIO, 0);
-
-  /* And loop forever :-) */
-  for(i = 0; i < 9; i++) {
-    k = 2000 - 200 * (i % 3);
-    ioctl(consolefd, KIOCSOUND, k);
-
-    /* Check keypress with timeout 160 ms */
-    x = check_io_input(160);
-    if (x)
-      break;
-  }
-  ioctl(consolefd, KIOCSOUND, 0);
-  if (consolefd)
-    close(consolefd);
-
-  /* Wait for keypress and absorb it */
-  while (!x) {
-    x = check_io_input(10000);
-    timer_update();
-  }
-  keyboard(KGETKEY, 0);
-}
-#endif
-
 /*
  * The dial has failed. Tell user.
  * Count down until retrytime and return.
@@ -594,17 +537,6 @@ MainLoop:
           if (d->script[0] == 0) {
             mc_wputs(dialwin,
                   _("Connected. Press any key to continue"));
-#ifdef VC_MUSIC
-            if (P_SOUND[0] == 'Y')
-              music();
-            else if (check_io_input(0))
-              keyboard(KGETKEY, 0);
-#else
-            /* MARK updated 02/17/94 - If VC_MUSIC is not */
-            /* defined, then at least make some beeps! */
-            if (P_SOUND[0] == 'Y')
-              mc_wputs(dialwin,"\007\007\007");
-#endif
             if (check_io_input(0))
               keyboard(KGETKEY, 0);
           }
@@ -822,7 +754,9 @@ static int v1_read(FILE *fp, struct dialent *d)
     return 1;
 
   memcpy(d->username, v1.username, sizeof(v1) - offsetof(struct v1_dialent, username));
-  strncpy(d->name, v1.name, sizeof(d->name));
+  _Static_assert(sizeof(d->name) >= sizeof(v1.name), "Size mismatch");
+  v1.name[sizeof(v1.name) - 1] = 0;
+  strcpy(d->name, v1.name);
   d->name[sizeof(d->name) - 1] = '\0';
   strncpy(d->number, v1.number, sizeof(d->number));
   d->number[sizeof(d->number) - 1] = '\0';

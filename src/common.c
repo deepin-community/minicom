@@ -24,10 +24,7 @@
  *
  * 27.10.98 jl  converted do_log to use stdarg
  */
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include <limits.h>
 
 #include "port.h"
@@ -138,4 +135,34 @@ mbswidth(const char *s)
     }
   free(wcs);
   return r;
+}
+
+
+/* This is taken from the Linux kernel -- lib/vsprintf.c */
+int vscnprintf(char *buf, size_t size, const char *fmt, va_list args)
+{
+  if (!size)
+    return 0;
+
+  int i = vsnprintf(buf, size, fmt, args);
+
+  if (i < 0)
+    return i;
+
+  if ((size_t)i < size)
+    return i;
+
+  return size - 1;
+}
+
+int scnprintf(char *buf, size_t size, const char *fmt, ...)
+{
+  va_list args;
+  int i;
+
+  va_start(args, fmt);
+  i = vscnprintf(buf, size, fmt, args);
+  va_end(args);
+
+  return i;
 }

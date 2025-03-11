@@ -23,13 +23,12 @@
  * js&jl 04.98	the better filename selection window
  */
 
-#include <poll.h>
-
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
+#include <poll.h>
 #include <wchar.h>
+#include <assert.h>
+#include <string.h>
+#include <sys/file.h>
 
 #include "port.h"
 #include "minicom.h"
@@ -309,6 +308,8 @@ void updown(int what, int nr)
 
   m_flush(portfd);
 
+  lockfile_remove();
+
   switch (udpid = fork()) {
     case -1:
       werror(_("Out of memory: could not fork()"));
@@ -333,8 +334,6 @@ void updown(int what, int nr)
         if (pipefd[1] != 2)
           close(pipefd[1]);
       }
-
-      lockfile_remove();
 
       for (n = 1; n < _NSIG; n++)
         signal(n, SIG_DFL);
@@ -385,8 +384,8 @@ void updown(int what, int nr)
             trim (trimbuf, buf, sizeof(trimbuf));
             do_log("%s", trimbuf);
           } else if (!strncmp (buffirst, "Bytes", 5)) {
-            strncpy (xfrstr, buf, sizeof(xfrstr));
-            xfrstr[sizeof(xfrstr) - 1] = '\0';
+            _Static_assert(sizeof(xfrstr) >= sizeof(buf), "String sizes");
+            strcpy(xfrstr, buf);
           }
           buffirst[0] = 0;
           trimbuf[0] = 0;
@@ -414,7 +413,7 @@ void updown(int what, int nr)
   if (win == (WIN *)0)
     mc_wreturn();
 
-  lockfile_create(0);
+  lockfile_create();
 
   /* MARK updated 02/17/94 - Flush modem port before displaying READY msg */
   /* because a BBS often displays menu text right after a download, and we */
@@ -428,20 +427,8 @@ void updown(int what, int nr)
   timer_update();
 
   /* If we got interrupted, status != 0 */
-  if (win && (status & 0xFF00) == 0) {
-#if VC_MUSIC
-    if (P_SOUND[0] == 'Y') {
-      mc_wprintf(win, _("\n READY: press any key to continue..."));
-      music();
-    } else
-      sleep(1);
-#else
-    /* MARK updated 02/17/94 - If there was no VC_MUSIC capability, */
-    /* then at least make some beeps! */
-    if (P_SOUND[0] == 'Y')
-      mc_wprintf(win, "\007\007\007");
+  if (win && ((status & 0xFF00) == 0 || status == 1)) {
     sleep(1);
-#endif
   }
   if (win)
     mc_wclose(win, 1);
@@ -453,51 +440,70 @@ void lockfile_remove(void)
     return;
 
 #if !HAVE_LOCKDEV
-  if (lockfile[0])
+  if (lockfile_mode == Lockfile_mode_uucp)
     unlink(lockfile);
+  else
+    {
+      assert(lockfile_mode == Lockfile_mode_flock);
+      if (flock(portfd, LOCK_UN))
+        fprintf(stderr, _("Failed to free flock: %s\n"), strerror(errno));
+    }
 #else
   ttyunlock(dial_tty);
 #endif
 }
 
-int lockfile_create(int no_msgs)
+int lockfile_create(void)
 {
-  int n;
-
   if (portfd_is_socket)
     return 0;
 
-#if !HAVE_LOCKDEV
-  if (!lockfile[0])
-    return 0;
+  assert(lockfile_mode != Lockfile_mode_unset);
 
-  int fd;
-  n = umask(022);
-  /* Create lockfile compatible with UUCP-1.2 */
-  if ((fd = open(lockfile, O_WRONLY | O_CREAT | O_EXCL, 0666)) < 0) {
-    if (!no_msgs)
-      werror(_("Cannot create lockfile!"));
-  } else {
-    // FHS format:
-    char buf[12];
-    snprintf(buf, sizeof(buf),  "%10d\n", getpid());
-    buf[sizeof(buf) - 1] = 0;
-    if (write(fd, buf, strlen(buf)) < (ssize_t)strlen(buf))
-      if (!no_msgs)
-        fprintf(stderr, _("Failed to write lockfile %s\n"), lockfile);
-    close(fd);
-  }
-  umask(n);
+#if !HAVE_LOCKDEV
+  if (lockfile_mode == Lockfile_mode_uucp)
+    {
+      mode_t orig_umask = umask(022);
+      /* Create lockfile compatible with UUCP-1.2 */
+      int fd = open(lockfile, O_WRONLY | O_CREAT | O_EXCL, 0666);
+      umask(orig_umask);
+      if (fd >= 0) {
+        // FHS format:
+        char buf[12];
+        snprintf(buf, sizeof(buf),  "%10d\n", getpid());
+        buf[sizeof(buf) - 1] = 0;
+        if (write(fd, buf, strlen(buf)) < (ssize_t)strlen(buf))
+          fprintf(stderr, _("Failed to write lockfile %s\n"), lockfile);
+        close(fd);
+        return 0;
+      }
+
+      // Cannot create lockfile, use flocks
+      lockfile_mode = Lockfile_mode_flock;
+    }
+
+  // Check again, lockfile_mode might have changed to Lockfile_mode_flock
+  if (lockfile_mode == Lockfile_mode_flock)
+    {
+      int r = flock(portfd, LOCK_EX | LOCK_NB);
+      if (r < 0)
+        {
+          if (errno == -EWOULDBLOCK)
+            fprintf(stderr, _("%s is already locked.\n"), dial_tty);
+          else
+            fprintf(stderr, _("Failed to lock %s.\n"), dial_tty);
+          return -1;
+        }
+    }
+
   return 0;
 #else
-  n = ttylock(dial_tty);
-  if (!no_msgs)
-    {
-      if (n < 0)
-        fprintf(stderr, _("Cannot create lockfile for %s: %s\n"), dial_tty, strerror(-n));
-      else if (n > 0)
-        fprintf(stderr, _("Device %s is locked.\n"), dial_tty);
-    }
+  int n = ttylock(dial_tty);
+  if (n < 0)
+    fprintf(stderr, _("Cannot create lockfile for %s: %s\n"),
+            dial_tty, strerror(-n));
+  else if (n > 0)
+    fprintf(stderr, _("Device %s is locked.\n"), dial_tty);
   return n;
 #endif
 }
@@ -526,11 +532,9 @@ void kermit(void)
       mc_wreturn();
       werror(_("Out of memory: could not fork()"));
       return;
-    case 0: /* Child */
-      close(portfd);
 
-      /* Remove lockfile */
-      lockfile_remove();
+    case 0: /* Child */
+      device_close();
 
       for (n = 0; n < _NSIG; n++)
         signal(n, SIG_DFL);
@@ -549,12 +553,6 @@ void kermit(void)
 
   /* Restore screen and keyboard modes */
   mc_wreturn();
-
-  /* Re-create lockfile */
-  lockfile_create(0);
-
-  m_flush(portfd);
-  port_init();
 }
 
 /* ============ Here begins the setenv function ============= */
@@ -811,7 +809,6 @@ int paste_file(void)
   char buf[128] = "";
   char *ptr;
   int bytes_read;
-  unsigned long bdone = 0;
   int x;
 
   if ((s = filedir(1, 0)) == NULL)
@@ -845,11 +842,9 @@ int paste_file(void)
 	vt_send(*s);
       vt_send('\r');
       vt_send('\n');
-      bdone += strlen(line) + 2;
     } else {
       for (s = line; *s; s++)
 	vt_send(*s);
-      bdone += strlen(s);
     }
     if (ldelay) {
 #ifdef HAVE_USLEEP

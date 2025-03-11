@@ -2,6 +2,8 @@
 
 set -e
 
+#DEBHELPER#
+
 if [ "$1" = purge ]
 then
 	rm -f /etc/minicom.users* /etc/minicom/minirc.*

@@ -9,7 +9,7 @@
  When it is used, minicom does 
  .I not 
  initialize, but puts you directly into the
-@@ -843,16 +843,18 @@
+@@ -841,16 +841,18 @@
  .BR hack " :-) was added. Now, minicom can separate the escape key and"
  escape-sequences. To see how dirty this was done, look into wkeys.c.
  But it works like a charm!

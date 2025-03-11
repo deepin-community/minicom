@@ -16,9 +16,7 @@
  * jseymour@jimsun.LinxNet.com (Jim Seymour) 03/26/98 - Added get_port()
  *    function to support multiple port specifications in config.
  */
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "port.h"
 #include "minicom.h"

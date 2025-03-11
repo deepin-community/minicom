@@ -19,41 +19,30 @@
  * jl  14.06.99 moved lockfile creation to before serial port opening
  *
  */
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "port.h"
 #include "minicom.h"
 #include "intl.h"
 #include "sysdep.h"
-#ifdef HAVE_ERRNO_H
 #include <errno.h>
-#endif
 
 #include <stdbool.h>
 #include <assert.h>
-
-#ifdef SVR4_LOCKS
-#include <sys/types.h>
 #include <sys/stat.h>
-#endif /* SVR4_LOCKS */
-
-static jmp_buf albuf;
-
-#ifdef USE_SOCKET
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+
+static jmp_buf albuf;
+
 static const char SOCKET_PREFIX_UNIX[] = "unix:";
 static const char SOCKET_PREFIX_UNIX_LEGACY[] = "unix#";
 static const char SOCKET_PREFIX_TCP[] = "tcp:";
-#endif
 
 /* Compile SCCS ID into executable. */
 const char *Version = VERSION;
 
-#ifndef SVR4_LOCKS
 /*
  * Find out name to use for lockfile when locking tty.
  */
@@ -64,7 +53,7 @@ static char *mdevlockname(char *s, char *res, int reslen)
   if (strncmp(s, "/dev/", 5) == 0) {
     /* In /dev */
     strncpy(res, s + 5, reslen - 1);
-    res[reslen-1] = 0;
+    res[reslen - 1] = 0;
     for (p = res; *p; p++)
       if (*p == '/')
         *p = '_';
@@ -75,12 +64,11 @@ static char *mdevlockname(char *s, char *res, int reslen)
     else
       p++;
     strncpy(res, p, reslen - 1);
-    res[reslen-1] = 0;
+    res[reslen - 1] = 0;
   }
 
   return res;
 }
-#endif
 
 static char *shortened_devpath(char *buf, int buflen, char *devpath)
 {
@@ -117,11 +105,11 @@ void leave(const char *s)
 {
   if (stdwin)
     mc_wclose(stdwin, 1);
-  if (portfd > 0) {
+  if (portfd > 0)
     m_restorestate(portfd);
-    close(portfd);
-  }
-  lockfile_remove();
+
+  device_close();
+
   if (P_CALLIN[0])
     fastsystem(P_CALLIN, NULL, NULL, NULL);
   fprintf(stderr, "%s", s);
@@ -154,7 +142,6 @@ static void get_alrm(int dummy)
   longjmp(albuf, 1);
 }
 
-#ifdef USE_SOCKET
 static void term_socket_connect_unix(void)
 {
   struct sockaddr_un sa_un;
@@ -247,7 +234,132 @@ void term_socket_close(void)
   portfd_is_connected = 0;
   portfd = -1;
 }
-#endif /* USE_SOCKET */
+
+static void lockfile_init()
+{
+#if HAVE_LOCKDEV
+  lockfile_mode = Lockfile_mode_ttylock;
+#else
+  struct stat stt;
+  char buf[128];
+
+  if (P_LOCK[0] && stat(P_LOCK, &stt) == 0) {
+    // Whether we can actually write the directory will be known on
+    // lockfile-create time, then we switch to Lockfile_mode_flock
+    lockfile_mode = Lockfile_mode_uucp;
+    snprintf(lockfile, sizeof(lockfile),
+                       "%s/LCK..%s",
+                       P_LOCK, mdevlockname(dial_tty, buf, sizeof(buf)));
+
+  }
+  else
+    lockfile_mode = Lockfile_mode_flock;
+#endif
+}
+
+static bool check_lockfile(void)
+{
+#if HAVE_LOCKDEV
+  return true;
+#else
+  if (lockfile_mode == Lockfile_mode_uucp) {
+    struct stat statbuf;
+    int r = stat(lockfile, &statbuf);
+    if (r < 0 && errno != ENOENT) {
+      if (stdwin)
+        mc_wclose(stdwin, 1);
+      fprintf(stderr, _("Lockfile %s cannot be queried (%d).\n"),
+              lockfile, errno);
+      return false;
+    }
+
+    if (r == 0 && statbuf.st_uid != getuid()) {
+      if (stdwin)
+        mc_wclose(stdwin, 1);
+      fprintf(stderr, _("Lockfile %s owned by someone else (uid=%d).\n"),
+              lockfile, statbuf.st_uid);
+      return false;
+    }
+
+    int fd = open(lockfile, O_RDONLY);
+    if (fd < 0) {
+      if (errno == EACCES) { // Lockfile not accessible/readable
+        if (stdwin)
+          mc_wclose(stdwin, 1);
+        fprintf(stderr, _("Device %s is locked by someone else.\n"),
+                dial_tty);
+        return false;
+      }
+    } else {
+
+      union {
+	char bytes[128];
+	int kermit;
+      } buf;
+
+      int n = read(fd, buf.bytes, 127);
+      close(fd);
+      if (n > 0) {
+        int pid = -1;
+        if (n == 4)
+          /* Kermit-style lockfile. */
+          pid = buf.kermit;
+        else {
+          /* Ascii lockfile. */
+          buf.bytes[n] = 0;
+          sscanf(buf.bytes, "%d", &pid);
+        }
+        if (pid > 0 && kill((pid_t)pid, 0) < 0 &&
+            errno == ESRCH) {
+          fprintf(stderr, _("Lockfile is stale. Overriding it..\n"));
+          sleep(1);
+          unlink(lockfile);
+        } else
+          n = 0;
+      }
+      if (n == 0) {
+        if (stdwin)
+          mc_wclose(stdwin, 1);
+        fprintf(stderr, _("Device %s is locked.\n"), dial_tty);
+        return false;
+      }
+    }
+  }
+
+  return true;
+#endif
+}
+
+static int device_open()
+{
+#if defined(O_NDELAY) && defined(F_SETFL)
+  portfd = open(dial_tty, O_RDWR | O_NDELAY | O_NOCTTY);
+  if (portfd < 0)
+    return -1;
+
+  /* Cancel the O_NDELAY flag. */
+  int n = fcntl(portfd, F_GETFL, 0);
+  fcntl(portfd, F_SETFL, n & ~O_NDELAY);
+#else
+  portfd = open(dial_tty, O_RDWR | O_NOCTTY);
+  if (portfd < 0)
+    return -1;
+#endif
+
+  // create after opening the dial_tty as we need a valid portfd
+  return lockfile_create();
+}
+
+void device_close()
+{
+  if (portfd > 0)
+    {
+      lockfile_remove();
+      close(portfd);
+    }
+  portfd = -1;
+}
+
 
 /*
  * Open the terminal.
@@ -256,22 +368,10 @@ void term_socket_close(void)
  */
 int open_term(int doinit, int show_win_on_error, int no_msgs)
 {
-  struct stat stt;
-  union {
-	char bytes[128];
-	int kermit;
-  } buf;
-  int fd, n = 0;
-  int pid;
-#ifdef USE_SOCKET
-#ifdef HAVE_ERRNO_H
   int s_errno;
-#endif
-#endif /* USE_SOCKET */
 
-#ifdef USE_SOCKET
   portfd_is_socket = portfd_is_connected = 0;
-  int ulen = strlen(SOCKET_PREFIX_UNIX);
+  size_t ulen = strlen(SOCKET_PREFIX_UNIX);
   assert(ulen == strlen(SOCKET_PREFIX_UNIX_LEGACY));
   if (!strncmp(dial_tty, SOCKET_PREFIX_UNIX, ulen))
     portfd_is_socket = Socket_type_unix;
@@ -279,64 +379,14 @@ int open_term(int doinit, int show_win_on_error, int no_msgs)
     portfd_is_socket = Socket_type_unix;
   else if (!strncmp(dial_tty, SOCKET_PREFIX_TCP, strlen(SOCKET_PREFIX_TCP)))
     portfd_is_socket = Socket_type_tcp;
-#endif /* USE_SOCKET */
 
   if (portfd_is_socket)
     goto nolock;
 
-#if !HAVE_LOCKDEV
-  /* First see if the lock file directory is present. */
-  if (P_LOCK[0] && stat(P_LOCK, &stt) == 0) {
+  lockfile_init();
 
-#ifdef SVR4_LOCKS
-    stat(dial_tty, &stt);
-    sprintf(lockfile, "%s/LK.%03d.%03d.%03d",
-                      P_LOCK, major(stt.st_dev),
-                      major(stt.st_rdev), minor(stt.st_rdev));
-
-#else /* SVR4_LOCKS */
-    snprintf(lockfile, sizeof(lockfile),
-                       "%s/LCK..%s",
-                       P_LOCK, mdevlockname(dial_tty, buf.bytes,
-                                            sizeof(buf.bytes)));
-#endif /* SVR4_LOCKS */
-
-  }
-  else
-    lockfile[0] = 0;
-
-  if (doinit > 0 && lockfile[0] && (fd = open(lockfile, O_RDONLY)) >= 0) {
-    n = read(fd, buf.bytes, 127);
-    close(fd);
-    if (n > 0) {
-      pid = -1;
-      if (n == 4)
-        /* Kermit-style lockfile. */
-        pid = buf.kermit;
-      else {
-        /* Ascii lockfile. */
-        buf.bytes[n] = 0;
-        sscanf(buf.bytes, "%d", &pid);
-      }
-      if (pid > 0 && kill((pid_t)pid, 0) < 0 &&
-          errno == ESRCH) {
-        fprintf(stderr, _("Lockfile is stale. Overriding it..\n"));
-        sleep(1);
-        unlink(lockfile);
-      } else
-        n = 0;
-    }
-    if (n == 0) {
-      if (stdwin)
-        mc_wclose(stdwin, 1);
-      fprintf(stderr, _("Device %s is locked.\n"), dial_tty);
-      return -1;
-    }
-  }
-#endif
-
-  if (doinit > 0 && lockfile_create(no_msgs) != 0)
-	  return -1;
+  if (doinit > 0 && check_lockfile() == false)
+    return -1;
 
 nolock:
   /* Run a special program to disable callin if needed. */
@@ -355,49 +405,30 @@ nolock:
     portfd = -1;
     signal(SIGALRM, get_alrm);
     alarm(20);
-#ifdef USE_SOCKET
-    if (portfd_is_socket) {
+    if (portfd_is_socket)
       term_socket_connect();
-    }
-#endif /* USE_SOCKET */
-    if (!portfd_is_socket) {
-#if defined(O_NDELAY) && defined(F_SETFL)
-      portfd = open(dial_tty, O_RDWR|O_NDELAY|O_NOCTTY);
-      if (portfd >= 0) {
-        /* Cancel the O_NDELAY flag. */
-        n = fcntl(portfd, F_GETFL, 0);
-        fcntl(portfd, F_SETFL, n & ~O_NDELAY);
+    else
+      {
+        if (device_open())
+	  return -1;
       }
-#else
-      if (portfd < 0)
-        portfd = open(dial_tty, O_RDWR|O_NOCTTY);
-#endif
-    }
+
     if (portfd >= 0) {
       if (doinit > 0)
         m_savestate(portfd);
       port_init();
     }
   }
-#ifdef USE_SOCKET
-#ifdef HAVE_ERRNO_H
   s_errno = errno;
-#endif
-#endif /* USE_SOCKET */
   alarm(0);
   signal(SIGALRM, SIG_IGN);
-#ifdef USE_SOCKET
   if (portfd < 0 && portfd_is_socket == Socket_type_no_socket) {
     if (!no_msgs) {
       if (doinit > 0) {
 	if (stdwin)
 	  mc_wclose(stdwin, 1);
-#ifdef HAVE_ERRNO_H
 	fprintf(stderr, _("minicom: cannot open %s: %s\n"),
 			dial_tty, strerror(s_errno));
-#else
-	fprintf(stderr, _("minicom: cannot open %s. Sorry.\n"), dial_tty);
-#endif
         lockfile_remove();
         return -1;
       }
@@ -409,9 +440,6 @@ nolock:
     lockfile_remove();
     return -1;
   }
-#else
-  (void)show_win_on_error;
-#endif /* USE_SOCKET */
 
   /* Set CLOCAL mode */
   m_nohang(portfd);
@@ -596,52 +624,50 @@ static void show_status_fmt(const char *fmt)
           switch (func)
             {
             case '%':
-              bufi += snprintf(buf + bufi, COLS - bufi, "%%");
+              bufi += scnprintf(buf + bufi, COLS - bufi, "%%");
               break;
             case 'H':
-              bufi += snprintf(buf + bufi, COLS - bufi, "%sZ", esc_key());
+              bufi += scnprintf(buf + bufi, COLS - bufi, "%sZ", esc_key());
               break;
             case 'V':
-              bufi += snprintf(buf + bufi, COLS - bufi, "%s", VERSION);
+              bufi += scnprintf(buf + bufi, COLS - bufi, "%s", VERSION);
               break;
             case 'b':
-#ifdef USE_SOCKET
               if (portfd_is_socket == Socket_type_unix)
-                bufi += snprintf(buf + bufi, COLS - bufi, "unix-socket");
+                bufi += scnprintf(buf + bufi, COLS - bufi, "unix-socket");
 	      else if (portfd_is_socket == Socket_type_tcp)
-                bufi += snprintf(buf + bufi, COLS - bufi, "TCP");
+                bufi += scnprintf(buf + bufi, COLS - bufi, "TCP");
               else
-#endif /* USE_SOCKET */
                 {
                   if (P_SHOWSPD[0] == 'l')
-                    bufi += snprintf(buf + bufi, COLS - bufi, "%6ld", linespd);
+                    bufi += scnprintf(buf + bufi, COLS - bufi, "%6ld", linespd);
                   else
-                    bufi += snprintf(buf + bufi, COLS - bufi, "%s", P_BAUDRATE);
-                  bufi += snprintf(buf + bufi, COLS - bufi, " %s%s%s",  P_BITS, P_PARITY, P_STOPB);
+                    bufi += scnprintf(buf + bufi, COLS - bufi, "%s", P_BAUDRATE);
+                  bufi += scnprintf(buf + bufi, COLS - bufi, " %s%s%s",  P_BITS, P_PARITY, P_STOPB);
                 }
               break;
             case 'T':
               switch (terminal)
                 {
                 case VT100:
-                  bufi += snprintf(buf + bufi, COLS - bufi, "VT102");
+                  bufi += scnprintf(buf + bufi, COLS - bufi, "VT102");
                   break;
                 case ANSI:
-                  bufi += snprintf(buf + bufi, COLS - bufi, "ANSI");
+                  bufi += scnprintf(buf + bufi, COLS - bufi, "ANSI");
                   break;
                 }
 
               break;
             case 'C':
-              bufi += snprintf(buf + bufi, COLS - bufi, cursormode == NORMAL ? "NOR" : "APP");
+              bufi += scnprintf(buf + bufi, COLS - bufi, cursormode == NORMAL ? "NOR" : "APP");
               break;
 
 	    case 't':
               if (online < 0)
-                bufi += snprintf(buf + bufi, COLS - bufi, "%s",
+                bufi += scnprintf(buf + bufi, COLS - bufi, "%s",
                                  P_HASDCD[0] == 'Y' ? _("Offline") : _("OFFLINE"));
               else
-                bufi += snprintf(buf + bufi, COLS - bufi, "%s %ld:%ld",
+                bufi += scnprintf(buf + bufi, COLS - bufi, "%s %ld:%ld",
                                  P_HASDCD[0] == 'Y' ? _("Online") : _("ONLINE"),
                                  online / 3600, (online / 60) % 60);
               break;
@@ -649,17 +675,17 @@ static void show_status_fmt(const char *fmt)
             case 'D':
                 {
                   char b[COLS - bufi];
-                  bufi += snprintf(buf + bufi, COLS - bufi, "%s",
+                  bufi += scnprintf(buf + bufi, COLS - bufi, "%s",
                                    shortened_devpath(b, sizeof(b), dial_tty));
                 }
               break;
 
             case '$':
-              bufi += snprintf(buf + bufi, COLS - bufi, "%s", status_message);
+              bufi += scnprintf(buf + bufi, COLS - bufi, "%s", status_message);
               break;
 
             default:
-              bufi += snprintf(buf + bufi, COLS - bufi, "?%c", func);
+              bufi += scnprintf(buf + bufi, COLS - bufi, "?%c", func);
               break;
             }
         }
@@ -887,9 +913,8 @@ dirty_goto:
        * need to free the FD so that a replug can get the same device
        * filename, open it again and be back */
       int reopen = portfd == -1;
-      close(portfd);
-      lockfile_remove();
-      portfd = -1;
+
+      device_close();
       if (open_term(reopen, reopen, 1) < 0) {
         if (!error_on_open_window)
           error_on_open_window = mc_tell(_("Cannot open %s!"), dial_tty);

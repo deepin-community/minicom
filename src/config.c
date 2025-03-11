@@ -8,7 +8,7 @@
  *		modify it under the terms of the GNU General Public License
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
- 
+ *
  *  You should have received a copy of the GNU General Public License along
  *  with this program; if not, write to the Free Software Foundation, Inc.,
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -30,17 +30,14 @@
  *    er 18-Apr-99 - the P_MULTILINE option
  *    jl 11.02.2000 - the P_STOPB option
  */
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include <limits.h>
 
 #include "port.h"
 #include "minicom.h"
 #include "intl.h"
 
-void doconv(void);   /* jl 04.09.97 */
+static void doconv(void);   /* jl 04.09.97 */
 
 /* Read in parameters. */
 void read_parms(void)
@@ -125,7 +122,7 @@ int Jcolor(char *s)
   }
   return -1; /* fmg - should never get here */
 }
- 
+
 /*
  * See if we have write access to a file.
  * If it is not there, see if the directory is writable.
@@ -243,10 +240,10 @@ static void dologopt(void)
 {
   WIN *w;
   int c;
-  char *logfnstr = _(" A - File name (empty=disable) :");
-  char *logconn  = _(" B - Log connects and hangups  :");
-  char *logxfer  = _(" C - Log file transfers        :");
-  char *question = _("Change which setting?");
+  const char *logfnstr = _(" A - File name (empty=disable) :");
+  const char *logconn  = _(" B - Log connects and hangups  :");
+  const char *logxfer  = _(" C - Log file transfers        :");
+  const char *question = _("Change which setting?");
 
   w = mc_wopen(5, 4, 75, 8, BDOUBLE, stdattr, mfcolor, mbcolor, 0, 0, 1);
 
@@ -288,19 +285,19 @@ static void dologopt(void)
 }
 #endif
 
-static void dopath(void)
+static void do_menu_path(void)
 {
   WIN *w;
   int c;
-  char *download_directory = _(" A - Download directory :");
-  char *upload_directory   = _(" B - Upload directory   :");
-  char *script_directory   = _(" C - Script directory   :");
-  char *script_program     = _(" D - Script program     :");
-  char *kermit_program     = _(" E - Kermit program     :");
+  const char *download_directory = _(" A - Download directory :");
+  const char *upload_directory   = _(" B - Upload directory   :");
+  const char *script_directory   = _(" C - Script directory   :");
+  const char *script_program     = _(" D - Script program     :");
+  const char *kermit_program     = _(" E - Kermit program     :");
 #ifdef LOGFILE
-  char *log_settings       = _(" F - Logging options");
+  const char *log_settings       = _(" F - Logging options");
 #endif
-  char *question           = _("Change which setting?");
+  const char *question           = _("Change which setting?");
 
   w = mc_wopen(5, 5, 75, 12, BDOUBLE, stdattr, mfcolor, mbcolor, 0, 0, 1);
   mc_wprintf(w, "%s %.44s\n", download_directory, P_DOWNDIR);
@@ -424,14 +421,14 @@ static void inputproto(WIN *w, int n)
   } while (c != '\r' && c != '\n');
 }
 
-static void doproto(void)
+static void do_menu_proto(void)
 {
   WIN *w;
   int f, c;
-  char *zmodem_download        = _("M  Zmodem download string activates...");
-  char *use_filename_selection = _("N  Use filename selection window......");
-  char *prompt_downdir         = _("O  Prompt for download directory......");
-  char *question               = _("Change which setting? (SPACE to delete)");
+  const char *zmodem_download        = _("M  Zmodem download string activates...");
+  const char *use_filename_selection = _("N  Use filename selection window......");
+  const char *prompt_downdir         = _("O  Prompt for download directory......");
+  const char *question               = _("Change which setting? (SPACE to delete)");
 
   w = mc_wopen(1, 3, 78, 20, BDOUBLE, stdattr, mfcolor, mbcolor, 0, 0, 1);
   mc_wputs(w, _("     Name             Program"));
@@ -532,26 +529,26 @@ static void doproto(void)
   mc_wclose(w, 1);
 }
 
-static void doserial(void)
+static void do_menu_serial(void)
 {
   WIN *w;
-  char *serial_device         = _(" A -    Serial Device      :");
+  const char *serial_device         = _(" A -    Serial Device      :");
 #if !HAVE_LOCKDEV
-  char *lockfile_location     = _(" B - Lockfile Location     :");
+  const char *lockfile_location     = _(" B - Lockfile Location     :");
 #endif
-  char *callin_program        = _(" C -   Callin Program      :");
-  char *callout_program       = _(" D -  Callout Program      :");
-  char *bps_par_bits          = _(" E -    Bps/Par/Bits       :");
-  char *hardware_flow_control = _(" F - Hardware Flow Control :");
-  char *software_flow_control = _(" G - Software Flow Control :");
-  char *rs485_enable          = _(" H -     RS485 Enable      :");
-  char *rs485_rts_on_send     = _(" I -   RS485 Rts On Send   :");
-  char *rs485_rts_after_send  = _(" J -  RS485 Rts After Send :");
-  char *rs485_rx_during_tx    = _(" K -  RS485 Rx During Tx   :");
-  char *rs485_terminate_bus   = _(" L -  RS485 Terminate Bus  :");
-  char *rs485_del_rts_bef_snd = _(" M - RS485 Delay Rts Before:");
-  char *rs485_del_rts_aft_snd = _(" N - RS485 Delay Rts After :");
-  char *question              = _("Change which setting?");
+  const char *callin_program        = _(" C -   Callin Program      :");
+  const char *callout_program       = _(" D -  Callout Program      :");
+  const char *bps_par_bits          = _(" E -    Bps/Par/Bits       :");
+  const char *hardware_flow_control = _(" F - Hardware Flow Control :");
+  const char *software_flow_control = _(" G - Software Flow Control :");
+  const char *rs485_enable          = _(" H -     RS485 Enable      :");
+  const char *rs485_rts_on_send     = _(" I -   RS485 Rts On Send   :");
+  const char *rs485_rts_after_send  = _(" J -  RS485 Rts After Send :");
+  const char *rs485_rx_during_tx    = _(" K -  RS485 Rx During Tx   :");
+  const char *rs485_terminate_bus   = _(" L -  RS485 Terminate Bus  :");
+  const char *rs485_del_rts_bef_snd = _(" M - RS485 Delay Rts Before:");
+  const char *rs485_del_rts_aft_snd = _(" N - RS485 Delay Rts After :");
+  const char *question              = _("Change which setting?");
 
   w = mc_wopen(5, 4, 75, 19, BDOUBLE, stdattr, mfcolor, mbcolor, 0, 0, 1);
   mc_wprintf(w, "%s %.41s\n", serial_device, P_PORT);
@@ -691,7 +688,7 @@ char * sspd(char *sptyp)
     return (_("line speed"));
 }
 
-static void domodem(void)
+static void do_menu_modem(void)
 {
   WIN *w;
   char *str;
@@ -897,71 +894,47 @@ static void domodem(void)
   }
 }
 
-
-/*
- * Screen and keyboard menu.
- */
-static void doscrkeyb(void)
+static void do_menu_screen(void)
 {
-  WIN *w, *w1;
+  WIN *w;
+  int miny = 4, maxy = 18;
   int c;
   int once = 0;
   int clr = 1;
-  char buf[16];
-  int miny = 2, maxy = 22;
   int old_stat = P_STATLINE[0];
-  FILE *fp;
-  char *command_key           = _(" A - Command key is         :");
-  char *backspace_key         = _(" B - Backspace key sends    :");
-  char *status_line           = _(" C - Status line is         :");
-  char *alarm_sound           = _(" D - Alarm sound            :");
-  char *foreground_color_menu = _(" E - Foreground Color (menu):");
-  char *background_color_menu = _(" F - Background Color (menu):");
-  char *foreground_color_term = _(" G - Foreground Color (term):");
-  char *background_color_term = _(" H - Background Color (term):");
-  char *foreground_color_stat = _(" I - Foreground Color (stat):");
-  char *background_color_stat = _(" J - Background Color (stat):");
-  char *history_buffer_size   = _(" K - History Buffer Size    :");
-  char *macros_file           = _(" L - Macros file            :");
-  char *macros_enabled        = _(" N - Macros enabled         :");
-  char *character_conversion  = _(" O - Character conversion   :");
-  char *add_linefeed          = _(" P - Add linefeed           :");
-  char *local_echo_str        = _(" Q - Local echo             :");
-  char *line_wrap             = _(" R - Line Wrap              :");
-  char *display_hex_str       = _(" S - Hex Display            :");
-  char *add_carriagereturn    = _(" T - Add carriage return    :");
-  char *question              = _("Change which setting?  (Esc to exit)");
 
-  w = mc_wopen(15, miny, 69, maxy, BDOUBLE, stdattr, mfcolor, mbcolor, 0, 0, 1);
+  const char *status_line           = _(" C - Status line is         :");
+  const char *foreground_color_menu = _(" E - Foreground Color (menu):");
+  const char *background_color_menu = _(" F - Background Color (menu):");
+  const char *foreground_color_term = _(" G - Foreground Color (term):");
+  const char *background_color_term = _(" H - Background Color (term):");
+  const char *foreground_color_stat = _(" I - Foreground Color (stat):");
+  const char *background_color_stat = _(" J - Background Color (stat):");
+  const char *add_linefeed          = _(" P - Add linefeed           :");
+  const char *local_echo_str        = _(" Q - Local echo             :");
+  const char *line_wrap             = _(" R - Line Wrap              :");
+  const char *display_hex_str       = _(" S - Hex Display            :");
+  const char *add_carriagereturn    = _(" T - Add carriage return    :");
+  const char *use_line_timestamp    = _(" U - Line Timestamp         :");
+  const char *question              = _("Change which setting?  (Esc to exit)");
 
-  mc_wtitle(w, TMID, _("Screen and keyboard"));
+  w = mc_wopen(6, miny, 70, maxy, BDOUBLE, stdattr, mfcolor, mbcolor, 0, 0, 1);
 
-  mc_wprintf(w, "%s %s\n", command_key, P_ESCAPE);
-  mc_wprintf(w, "%s %s\n", backspace_key, P_BACKSPACE);
+  mc_wtitle(w, TMID, _("Screen"));
+
   mc_wprintf(w, "%s %s\n", status_line, _(P_STATLINE));
-  mc_wprintf(w, "%s %s\n", alarm_sound, _(P_SOUND));
-  /* fmg - colors support */
   mc_wprintf(w, "%s %s\n", foreground_color_menu, _(J_col[mfcolor]));
   mc_wprintf(w, "%s %s\n", background_color_menu, _(J_col[mbcolor]));
   mc_wprintf(w, "%s %s\n", foreground_color_term, _(J_col[tfcolor]));
   mc_wprintf(w, "%s %s\n", background_color_term, _(J_col[tbcolor]));
   mc_wprintf(w, "%s %s\n", foreground_color_stat, _(J_col[sfcolor]));
   mc_wprintf(w, "%s %s\n", background_color_stat, _(J_col[sbcolor]));
-
-  /* MARK updated 02/17/95 - Configurable history buffer size */
-  mc_wprintf(w, "%s %s\n", history_buffer_size, P_HISTSIZE);
-
-  /* fmg - macros support */
-  mc_wprintf(w, "%s %s\n", macros_file, P_MACROS);
-  mc_wprintf(w, _(" M - Edit Macros\n"));
-  mc_wprintf(w, "%s %s\n", macros_enabled, _(P_MACENAB));
-  mc_wprintf(w, "%s %s\n", character_conversion, P_CONVF);
-
   mc_wprintf(w, "%s %s\n", add_linefeed, _(P_ADDLINEFEED));
   mc_wprintf(w, "%s %s\n", local_echo_str, _(P_LOCALECHO));
   mc_wprintf(w, "%s %s\n", line_wrap, _(P_LINEWRAP));
   mc_wprintf(w, "%s %s\n", display_hex_str, _(P_DISPLAYHEX));
   mc_wprintf(w, "%s %s\n", add_carriagereturn, _(P_ADDCARRIAGERETURN));
+  mc_wprintf(w, "%s %s\n", use_line_timestamp, line_timestamp_description());
 
   mc_wredraw(w, 1);
 
@@ -979,12 +952,7 @@ static void doscrkeyb(void)
       once = 0;
     } else
       c = rwxgetch();
-#if 0 /* This might save us someday */
-    if (!usecolor && (c >= 'E' && c <= 'J')) {
-      werror(_("You can't change colors in black and white mode"));
-      continue;
-    }
-#endif
+
     switch(c) {
       case '\n':
         /* fmg - sanity checks... "we found the enemy and he is us" :-) */
@@ -1005,6 +973,198 @@ static void doscrkeyb(void)
         /* fmg - I'll let them change sfcolor=sbcolor because it's just
            another way of turning "off" the status line... */
 
+        mc_wclose(w, 1);
+        if (P_STATLINE[0] != old_stat)
+          init_emul(terminal, 0);
+        return;
+      case 'C':
+        if (P_STATLINE[0] == 'e') {
+          psets(P_STATLINE, N_("disabled"));
+          tempst = 1;
+        } else {
+          psets(P_STATLINE, N_("enabled"));
+          /* See if it fits on screen */
+          if (LINES > 24)
+            tempst = 0;
+        }
+        mc_wlocate(w, mbswidth(status_line) + 1, 0);
+        mc_wprintf(w, "%s ", _(P_STATLINE));
+        break;
+      case 'E': /* fmg - letters cycle colors */
+        if (mfcolor == WHITE)
+          mfcolor = BLACK;
+        else
+          mfcolor++;
+        psets(P_MFG, J_col[mfcolor]);
+        mc_wlocate(w, mbswidth(foreground_color_menu) + 1, 1);
+        mc_wprintf(w, "%s   ", _(J_col[mfcolor]));
+        break;
+      case 'F': /* fmg - letters cycle colors */
+        if (mbcolor == WHITE)
+          mbcolor = BLACK;
+        else
+          mbcolor++;
+        psets(P_MBG, J_col[mbcolor]);
+        mc_wlocate(w, mbswidth(background_color_menu) + 1, 2);
+        mc_wprintf(w, "%s   ", _(J_col[mbcolor]));
+        break;
+      case 'G': /* fmg - letters cycle colors */
+        if (tfcolor == WHITE)
+          tfcolor = BLACK;
+        else
+          tfcolor++;
+        psets(P_TFG, J_col[tfcolor]);
+        mc_wlocate(w, mbswidth(foreground_color_term) + 1, 3);
+        mc_wprintf(w, "%s   ", _(J_col[tfcolor]));
+        if (us)
+          vt_pinit(us, tfcolor, tbcolor);
+        break;
+      case 'H': /* fmg - letters cycle colors */
+        if (tbcolor == WHITE)
+          tbcolor = BLACK;
+        else
+          tbcolor++;
+        psets(P_TBG, J_col[tbcolor]);
+        mc_wlocate(w, mbswidth(background_color_term) + 1, 4);
+        mc_wprintf(w, "%s   ", _(J_col[tbcolor]));
+        if (us)
+          vt_pinit(us, tfcolor, tbcolor);
+        break;
+      case 'I': /* fmg - letters cycle colors & redraw stat line */
+        if (sfcolor == WHITE)
+          sfcolor = BLACK;
+        else
+          sfcolor++;
+
+        /* fmg - this causes redraw of status line (if any)
+           in current color */
+
+        if (st) {
+          mc_wclose(st,0);
+          st = mc_wopen(0, LINES - 1, COLS - 1, LINES - 1, BNONE,
+                     XA_NORMAL, sfcolor, sbcolor, 1, 0, 1);
+          show_status();
+        }
+        psets(P_SFG, J_col[sfcolor]);
+        mc_wlocate(w, mbswidth(foreground_color_stat) + 1, 5);
+        mc_wprintf(w, "%s   ", _(J_col[sfcolor]));
+        break;
+      case 'J': /* fmg - letters cycle colors & redraw stat line */
+        if (sbcolor == WHITE)
+          sbcolor = BLACK;
+        else
+          sbcolor++;
+
+        /* fmg - this causes redraw of status line (if any)
+           in current color */
+
+        if (st) {
+          mc_wclose(st,0);
+          st = mc_wopen(0, LINES - 1, COLS - 1, LINES - 1, BNONE,
+                     XA_NORMAL, sfcolor, sbcolor, 1, 0, 0);
+          show_status();
+        }
+        psets(P_SBG, J_col[sbcolor]);
+        mc_wlocate(w, mbswidth(background_color_stat) + 1, 6);
+        mc_wprintf(w, "%s   ", _(J_col[sbcolor]));
+        break;
+      case 'P':
+        psets(P_ADDLINEFEED, yesno(P_ADDLINEFEED[0] == 'N'));
+        mc_wlocate(w, mbswidth(add_linefeed) + 1, 7);
+        mc_wprintf(w, "%s", _(P_ADDLINEFEED));
+        addlf = strcasecmp(P_ADDLINEFEED, "yes") == 0;
+	set_addlf(addlf);
+        break;
+      case 'Q':
+        psets(P_LOCALECHO, yesno(P_LOCALECHO[0] == 'N'));
+        mc_wlocate(w, mbswidth(local_echo_str) + 1, 8);
+        mc_wprintf(w, "%s", _(P_LOCALECHO));
+        local_echo = strcasecmp(P_LOCALECHO,   "yes") == 0;
+	set_local_echo(local_echo);
+        break;
+      case 'R':
+        psets(P_LINEWRAP, yesno(P_LINEWRAP[0] == 'N'));
+        mc_wlocate(w, mbswidth(line_wrap) + 1, 9);
+        mc_wprintf(w, "%s", _(P_LINEWRAP));
+        wrapln = strcasecmp(P_LINEWRAP, "yes") == 0;
+        break;
+      case 'S':
+        psets(P_DISPLAYHEX, yesno(P_DISPLAYHEX[0] == 'N'));
+        mc_wlocate(w, mbswidth(display_hex_str) + 1, 10);
+        mc_wprintf(w, "%s", _(P_DISPLAYHEX));
+        display_hex = strcasecmp(P_DISPLAYHEX, "yes") == 0;
+        break;
+      case 'T':
+        psets(P_ADDCARRIAGERETURN, yesno(P_ADDCARRIAGERETURN[0] == 'N'));
+        mc_wlocate(w, mbswidth(add_carriagereturn) + 1, 11);
+        mc_wprintf(w, "%s", _(P_ADDCARRIAGERETURN));
+        addcr = strcasecmp(P_ADDCARRIAGERETURN, "yes") == 0;
+	set_addcr(addcr);
+        break;
+      case 'U':
+        {
+          int l = toggle_line_timestamp();
+          psets(P_LINE_TIMESTAMP, timestamp_option_idstring(l));
+          mc_wlocate(w, mbswidth(use_line_timestamp) + 1, 12);
+          mc_wprintf(w, "%-35s", line_timestamp_description());
+        }
+        break;
+     }
+  }
+}
+
+/*
+ * Keyboard and misc menu.
+ */
+static void do_menu_keyboard_and_misc(void)
+{
+  WIN *w, *w1;
+  int c;
+  int once = 0;
+  int clr = 1;
+  int miny = 8, maxy = 17;
+  int old_stat = P_STATLINE[0];
+  FILE *fp;
+  const char *command_key           = _(" A - Command key is         :");
+  const char *backspace_key         = _(" B - Backspace key sends    :");
+  const char *history_buffer_size   = _(" K - History Buffer Size    :");
+  const char *macros_file           = _(" L - Macros file            :");
+  const char *macros_enabled        = _(" N - Macros enabled         :");
+  const char *character_conversion  = _(" O - Character conversion   :");
+  const char *question              = _("Change which setting?  (Esc to exit)");
+
+  w = mc_wopen(6, miny, 70, maxy, BDOUBLE, stdattr, mfcolor, mbcolor, 0, 0, 1);
+
+  mc_wtitle(w, TMID, _("Keyboard and Misc"));
+
+  mc_wprintf(w, "%s %s\n", command_key, P_ESCAPE);
+  mc_wprintf(w, "%s %s\n", backspace_key, P_BACKSPACE);
+  mc_wprintf(w, "%s %s\n", history_buffer_size, P_HISTSIZE);
+  mc_wprintf(w, "%s %s\n", macros_file, P_MACROS);
+  mc_wprintf(w, _(" M - Edit Macros\n"));
+  mc_wprintf(w, "%s %s\n", macros_enabled, _(P_MACENAB));
+  mc_wprintf(w, "%s %s\n", character_conversion, P_CONVF);
+
+  mc_wredraw(w, 1);
+
+  while (1) {
+    if (clr) {
+      mc_wlocate(w, 2, maxy - miny);
+      mc_wprintf(w, "%s ", question);
+      mc_wclreol(w);
+      clr = 0;
+    } else
+      mc_wlocate(w, mbswidth(question) + 3, maxy - miny);
+
+    if (once) {	/* fmg - allow to force looping */
+      c = once;
+      once = 0;
+    } else
+      c = rwxgetch();
+
+    switch(c) {
+      case '\n':
+        /* fmg - sanity checks... "we found the enemy and he is us" :-) */
         /* MARK updated 02/17/95, Warn user to restart */
         /* minicom if they changed history buffer size */
         if (atoi(P_HISTSIZE) != num_hist_lines) {
@@ -1026,41 +1186,44 @@ static void doscrkeyb(void)
           init_emul(terminal, 0);
         return;
       case 'A':
-        w1 = mc_wopen(11, 8, 73, 17, BSINGLE, stdattr, mfcolor, mbcolor, 0, 0, 1);
-        mc_wtitle(w1, TMID, _("Program new command key"));
-        mc_wputs(w1, _(
-	   "\n Press the new command key. If you want to use\n"
-	   " the META or ALT key enter:\n\n"
-	   "  o SPACE if your meta key sets the 8th bit high\n"
-	   "  o ESC   if your meta key sends the ESCAPE prefix (standard)\n"
-           "\n\n Press new command key: "));
-        mc_wredraw(w1, 1);
-        c = wxgetch();
-        mc_wclose(w1, 1);
-        if (c  == ' ')
-          strcpy(buf, N_("Meta-8th bit "));
-        else if (c == 27)
-          strcpy(buf, N_("Escape (Meta)"));
-        else
-          sprintf(buf, "^%c           ", (c & 0x1f) + 'A' - 1);
-        psets(P_ESCAPE, buf);
-        mc_wlocate(w, mbswidth(command_key) + 1, 0);
-        mc_wputs(w, _(buf));
-        clr = 1;
-        alt_override = 0;
-        switch(P_ESCAPE[0]) {
-          case '^':
-            c = P_ESCAPE[1] & 31;
-            break;
-          case 'E':
-            c = 27;
-            break;
-          default:
-            c = 128;
-            break;
+        {
+          char buf[32];
+          w1 = mc_wopen(11, 8, 73, 17, BSINGLE, stdattr, mfcolor, mbcolor, 0, 0, 1);
+          mc_wtitle(w1, TMID, _("Program new command key"));
+          mc_wputs(w1, _(
+             "\n Press the new command key. If you want to use\n"
+             " the META or ALT key enter:\n\n"
+             "  o SPACE if your meta key sets the 8th bit high\n"
+             "  o ESC   if your meta key sends the ESCAPE prefix (standard)\n"
+             "\n\n Press new command key: "));
+          mc_wredraw(w1, 1);
+          c = wxgetch();
+          mc_wclose(w1, 1);
+          if (c  == ' ')
+            strcpy(buf, N_("Meta-8th bit "));
+          else if (c == 27)
+            strcpy(buf, N_("Escape (Meta)"));
+          else
+            sprintf(buf, "^%c           ", (c & 0x1f) + 'A' - 1);
+          psets(P_ESCAPE, buf);
+          mc_wlocate(w, mbswidth(command_key) + 1, 0);
+          mc_wputs(w, _(buf));
+          clr = 1;
+          alt_override = 0;
+          switch(P_ESCAPE[0]) {
+            case '^':
+              c = P_ESCAPE[1] & 31;
+              break;
+            case 'E':
+              c = 27;
+              break;
+            default:
+              c = 128;
+              break;
+          }
+          keyboard(KSETESC, c);
+          show_status();
         }
-        keyboard(KSETESC, c);
-        show_status();
         break;
       case 'B':
         if (P_BACKSPACE[0] == 'D')
@@ -1071,104 +1234,8 @@ static void doscrkeyb(void)
         mc_wprintf(w, "%s ", P_BACKSPACE);
         keyboard(KSETBS, P_BACKSPACE[0] == 'B' ? 8 : 127);
         break;
-      case 'C':
-        if (P_STATLINE[0] == 'e') {
-          psets(P_STATLINE, N_("disabled"));
-          tempst = 1;
-        } else {
-          psets(P_STATLINE, N_("enabled"));
-          /* See if it fits on screen */
-          if (LINES > 24)
-            tempst = 0;
-        }
-        mc_wlocate(w, mbswidth(status_line) + 1, 2);
-        mc_wprintf(w, "%s ", _(P_STATLINE));
-        break;
-      case 'D':
-        psets(P_SOUND, yesno(P_SOUND[0] == 'N'));
-        mc_wlocate(w, mbswidth(alarm_sound) + 1, 3);
-        mc_wprintf(w, "%s", _(P_SOUND));
-        break;
-      case 'E': /* fmg - letters cycle colors */
-        if (mfcolor == WHITE)
-          mfcolor = BLACK;
-        else
-          mfcolor++;
-        psets(P_MFG, J_col[mfcolor]);
-        mc_wlocate(w, mbswidth(foreground_color_menu) + 1, 4);
-        mc_wprintf(w, "%s   ", _(J_col[mfcolor]));
-        break;
-      case 'F': /* fmg - letters cycle colors */
-        if (mbcolor == WHITE)
-          mbcolor = BLACK;
-        else
-          mbcolor++;
-        psets(P_MBG, J_col[mbcolor]);
-        mc_wlocate(w, mbswidth(background_color_menu) + 1, 5);
-        mc_wprintf(w, "%s   ", _(J_col[mbcolor]));
-        break;
-      case 'G': /* fmg - letters cycle colors */
-        if (tfcolor == WHITE)
-          tfcolor = BLACK;
-        else
-          tfcolor++;
-        psets(P_TFG, J_col[tfcolor]);
-        mc_wlocate(w, mbswidth(foreground_color_term) + 1, 6);
-        mc_wprintf(w, "%s   ", _(J_col[tfcolor]));
-        if (us)
-          vt_pinit(us, tfcolor, tbcolor);
-        break;
-      case 'H': /* fmg - letters cycle colors */
-        if (tbcolor == WHITE)
-          tbcolor = BLACK;
-        else
-          tbcolor++;
-        psets(P_TBG, J_col[tbcolor]);
-        mc_wlocate(w, mbswidth(background_color_term) + 1, 7);
-        mc_wprintf(w, "%s   ", _(J_col[tbcolor]));
-        if (us)
-          vt_pinit(us, tfcolor, tbcolor);
-        break;
-      case 'I': /* fmg - letters cycle colors & redraw stat line */
-        if (sfcolor == WHITE)
-          sfcolor = BLACK;
-        else
-          sfcolor++;
-
-        /* fmg - this causes redraw of status line (if any)
-           in current color */
-
-        if (st) {
-          mc_wclose(st,0);
-          st = mc_wopen(0, LINES - 1, COLS - 1, LINES - 1, BNONE,
-                     XA_NORMAL, sfcolor, sbcolor, 1, 0, 1);
-          show_status();
-        }
-        psets(P_SFG, J_col[sfcolor]);
-        mc_wlocate(w, mbswidth(foreground_color_stat) + 1, 8);
-        mc_wprintf(w, "%s   ", _(J_col[sfcolor]));
-        break;
-      case 'J': /* fmg - letters cycle colors & redraw stat line */
-        if (sbcolor == WHITE)
-          sbcolor = BLACK;
-        else
-          sbcolor++;
-
-        /* fmg - this causes redraw of status line (if any)
-           in current color */
-
-        if (st) {
-          mc_wclose(st,0);
-          st = mc_wopen(0, LINES - 1, COLS - 1, LINES - 1, BNONE,
-                     XA_NORMAL, sfcolor, sbcolor, 1, 0, 0);
-          show_status();
-        }
-        psets(P_SBG, J_col[sbcolor]);
-        mc_wlocate(w, mbswidth(background_color_stat) + 1, 9);
-        mc_wprintf(w, "%s   ", _(J_col[sbcolor]));
-        break;
       case 'K': /* MARK updated 02/17/95 - Config history size */
-        pgets(w, mbswidth(history_buffer_size) + 1, 10,
+        pgets(w, mbswidth(history_buffer_size) + 1, 2,
               P_HISTSIZE, 6, 6, 0);
 
         /* In case gibberish or a value was out of bounds, */
@@ -1180,11 +1247,11 @@ static void doscrkeyb(void)
         else if (atoi(P_HISTSIZE) >= 5000)
           strcpy(P_HISTSIZE,"5000");
 
-        mc_wlocate(w, mbswidth(history_buffer_size) + 1, 10);
+        mc_wlocate(w, mbswidth(history_buffer_size) + 1, 2);
         mc_wprintf(w, "%s     ", P_HISTSIZE);
         break;
       case 'L': /* fmg - get local macros storage file */
-        pgets(w, mbswidth(macros_file) + 1, 11, P_MACROS, 64, 64, 1);
+        pgets(w, mbswidth(macros_file) + 1, 3, P_MACROS, 64, 64, 1);
 
         /* Try to open the file to read it in. */
         fp = fopen(pfix_home(P_MACROS), "r+");
@@ -1212,39 +1279,13 @@ static void doscrkeyb(void)
         break;
       case 'N':
         psets(P_MACENAB, yesno(P_MACENAB[0] == 'N'));
-        mc_wlocate(w, mbswidth(macros_enabled) + 1, 13);
+        mc_wlocate(w, mbswidth(macros_enabled) + 1, 5);
         mc_wprintf(w, "%s", _(P_MACENAB));
         break;
       case 'O': /* Character conversions - jl / 04.09.97 */
         doconv();
-        mc_wlocate(w, mbswidth(character_conversion) + 1, 14);
+        mc_wlocate(w, mbswidth(character_conversion) + 1, 6);
         mc_wprintf(w, "%-16.16s", _(P_CONVF));
-        break;
-      case 'P':
-        psets(P_ADDLINEFEED, yesno(P_ADDLINEFEED[0] == 'N'));
-        mc_wlocate(w, mbswidth(add_linefeed) + 1, 15);
-        mc_wprintf(w, "%s", _(P_ADDLINEFEED));
-        break;
-      case 'Q':
-        psets(P_LOCALECHO, yesno(P_LOCALECHO[0] == 'N'));
-        mc_wlocate(w, mbswidth(local_echo_str) + 1, 16);
-        mc_wprintf(w, "%s", _(P_LOCALECHO));
-        break;
-      case 'R':
-        psets(P_LINEWRAP, yesno(P_LINEWRAP[0] == 'N'));
-        mc_wlocate(w, mbswidth(line_wrap) + 1, 17);
-        mc_wprintf(w, "%s", _(P_LINEWRAP));
-        break;
-      case 'S':
-	psets(P_DISPLAYHEX, yesno(P_DISPLAYHEX[0] == 'N'));
-	mc_wlocate(w, mbswidth(display_hex_str) + 1, 18);
-	mc_wprintf(w, "%s", _(P_DISPLAYHEX));
-	display_hex = strcasecmp(P_DISPLAYHEX, "yes") == 0;
-	break;
-      case 'T':
-        psets(P_ADDCARRIAGERETURN, yesno(P_ADDCARRIAGERETURN[0] == 'N'));
-        mc_wlocate(w, mbswidth(add_carriagereturn) + 1, 19);
-        mc_wprintf(w, "%s", _(P_ADDCARRIAGERETURN));
         break;
      }
   }
@@ -1262,13 +1303,13 @@ int dotermmenu(void)
   int new_term = -1;
   int old_stat = P_STATLINE[0];
   char buf[8];
-  char *terminal_emulation  = _(" A -      Terminal emulation :");
-  char *backspace_key_sends = _(" B -     Backspace key sends :");
-  char *status_line         = _(" C -          Status line is :");
-  char *msg_nl_delay        = _(" D -   Newline tx delay (ms) :");
-  char *msg_answerback      = _(" E -          ENQ answerback :");
-  char *msg_ch_delay        = _(" F - Character tx delay (ms) :");
-  char *question            = _("Change which setting?");
+  const char *terminal_emulation  = _(" A -      Terminal emulation :");
+  const char *backspace_key_sends = _(" B -     Backspace key sends :");
+  const char *status_line         = _(" C -          Status line is :");
+  const char *msg_nl_delay        = _(" D -   Newline tx delay (ms) :");
+  const char *msg_answerback      = _(" E -          ENQ answerback :");
+  const char *msg_ch_delay        = _(" F - Character tx delay (ms) :");
+  const char *question            = _("Change which setting?");
 
   w = mc_wopen(15, 7, 64, 15, BDOUBLE, stdattr, mfcolor, mbcolor, 0, 0, 1);
   mc_wtitle(w, TMID, _("Terminal settings"));
@@ -1333,23 +1374,27 @@ int dotermmenu(void)
         mc_wprintf(w, "%s ", _(P_STATLINE));
         break;
       case 'D':
-        sprintf(buf, "%d", vt_nl_delay);
         mc_wlocate(w, mbswidth(msg_nl_delay) + 1, 4);
-        mc_wgets(w, buf, 5, 5);
-        vt_nl_delay = atoi(buf);
+        mc_wgets(w, P_MSG_NL_DELAY, 5, 5);
+        vt_nl_delay = atoi(P_MSG_NL_DELAY);
         mc_wlocate(w, mbswidth(msg_nl_delay) + 1, 4);
         mc_wprintf(w, "%-4d", vt_nl_delay);
+        // Rewrite P_MSG_NL_DELAY in case of invalid input
+        sprintf(buf, "%d", vt_nl_delay);
+        psets(P_MSG_NL_DELAY, buf);
         break;
       case 'E':
         pgets(w, strlen(msg_answerback) + 1, 5, P_ANSWERBACK, 50, 50, 0);
         break;
       case 'F':
-        sprintf(buf, "%d", vt_ch_delay);
         mc_wlocate(w, mbswidth(msg_ch_delay) + 1, 6);
-        mc_wgets(w, buf, 5, 5);
-        vt_ch_delay = atoi(buf);
+        mc_wgets(w, P_MSG_CH_DELAY, 5, 5);
+        vt_ch_delay = atoi(P_MSG_CH_DELAY);
         mc_wlocate(w, mbswidth(msg_ch_delay) + 1, 6);
         mc_wprintf(w, "%-4d", vt_ch_delay);
+        // Rewrite P_MSG_CH_DELAY in case of invalid input
+        sprintf(buf, "%d", vt_ch_delay);
+        psets(P_MSG_CH_DELAY, buf);
         break;
       default:
         break;
@@ -1361,7 +1406,7 @@ int dotermmenu(void)
 /*
  * Save the configuration.
  */
-void vdodflsave(void)
+void vdo_dflsave(void)
 {
   dodflsave();
 }
@@ -1418,7 +1463,7 @@ int domacsave(void)
 /*
  * Save the configuration, ask a name for it.
  */
-static void donamsave(void)
+static void do_namsave(void)
 {
   char ifile[128];
   const char *s;
@@ -1436,13 +1481,14 @@ static void donamsave(void)
 }
 
 static void (*funcs1[])(void) = {
-  dopath,
-  doproto,
-  doserial,
-  domodem,
-  doscrkeyb,
-  vdodflsave,
-  donamsave,
+  do_menu_path,
+  do_menu_proto,
+  do_menu_serial,
+  do_menu_modem,
+  do_menu_screen,
+  do_menu_keyboard_and_misc,
+  vdo_dflsave,
+  do_namsave,
   NULL,
   NULL
 };
@@ -1454,7 +1500,8 @@ static char const *menu1[] = {
   N_("File transfer protocols"),
   N_("Serial port setup"),
   N_("Modem and dialing"),
-  N_("Screen and keyboard"),
+  N_("Screen"),
+  N_("Keyboard and Misc"),
   save_setup_as_menu,
   N_("Save setup as.."),
   N_("Exit"),
@@ -1478,10 +1525,10 @@ int config(int setup)
   save_setup_as_menu[sizeof(save_setup_as_menu) - 1] = 0;
 
   if (!setup)
-    menu1[8] = NULL;
+    menu1[9] = NULL;
 
-  c = mc_wselect(13, 10, menu1, funcs1, _("configuration"), stdattr, mfcolor, mbcolor);
-  if (c == 9)
+  c = mc_wselect(13, 9, menu1, funcs1, _("configuration"), stdattr, mfcolor, mbcolor);
+  if (c == 10)
     return 1;
   return 0;
 }
@@ -1821,7 +1868,7 @@ int prch(int c)
 }
 
 /* Edit the character conversion tables. jl 04.09.97 */
-void doconv(void)
+static void doconv(void)
 {
   WIN *w;
   int i, j, k, l, h,

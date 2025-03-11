@@ -16,10 +16,7 @@
  *
  * hgk+jl 02.98 File selection window (no longer used this way..)
  */
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include <sys/types.h>
 #include <dirent.h>
 #include <sys/stat.h>

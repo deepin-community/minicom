@@ -27,11 +27,7 @@
  * 10.09.2013 ts Support sending the null character
  * 10.10.2013 ts Add the pipedshell command
  */
-
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include <sys/wait.h>
 #include <stdarg.h>
 
@@ -167,7 +163,7 @@ void myclock(int dummy)
 static char *buffer; /* The buffer is only growing and never freed... */
 static unsigned buffersize;
 
-static void buf_wr(unsigned idx, char val)
+static void buf_wr(unsigned idx, unsigned char val)
 {
   if (idx >= buffersize)
     {
@@ -1092,8 +1088,11 @@ int main(int argc, char **argv)
 #if 0 /* Shouldn't need this.. */
   signal(SIGHUP, SIG_IGN);
 #endif
-  /* On some Linux systems SIGALRM is masked by default. Unmask it */  
-  sigrelse(SIGALRM);  
+  /* On some Linux systems SIGALRM is masked by default. Unmask it */
+  sigset_t ss;
+  sigemptyset(&ss);
+  sigaddset(&ss, SIGALRM);
+  sigprocmask(SIG_UNBLOCK, &ss, NULL);
 
   /* initialize locale support */
   setlocale(LC_ALL, "");

@@ -35,7 +35,7 @@
  * jl  10.02.2000 parameter P_STOPB
  */
 
-#define PARS_VAL_LEN 128
+#define PARS_VAL_LEN 256
 
 struct pars {
   /* value is first, so that (char *)mpars[0] == mpars[0].value */
@@ -142,7 +142,7 @@ enum config_type {
 #define P_MACCHG        mpars[75].value  /* macros changed flag */
 #define P_MACENAB	mpars[76].value	 /* macros enabled flag */
 
-#define P_SOUND		mpars[77].value
+#define P_SOUND		mpars[77].value  /* Unused */
 #define P_HISTSIZE      mpars[78].value  /* History buffer size */
 
 #define P_CONVF		mpars[79].value  /* Char.conversion table */
@@ -175,7 +175,12 @@ enum config_type {
 #define P_RS485_DEL_RTS_BEF_SND mpars[98].value  /* RS485 Delay rts before send */
 #define P_RS485_DEL_RTS_AFT_SND mpars[99].value  /* RS485 Delay rts after send */
 
-#define MPARS_MAX 100
+#define P_LINE_TIMESTAMP        mpars[100].value /* line_timestamp */
+
+#define P_MSG_CH_DELAY          mpars[101].value /* msg_ch_delay */
+#define P_MSG_NL_DELAY          mpars[102].value /* msg_nl_delay */
+
+#define MPARS_MAX 103
 
 extern struct pars mpars[MPARS_MAX + 1]; // + 1 is for end-marker
 

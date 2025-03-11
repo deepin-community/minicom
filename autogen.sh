@@ -9,5 +9,8 @@ set -x
 aclocal-$AUTOMAKEVER
 [ "$?" != 0 ] && echo "aclocal-$AUTOMAKEVER not available or failed!" && exit 1
 autoheader || exit 1
-automake-$AUTOMAKEVER --add-missing --force --gnu || exit 1
+automake-$AUTOMAKEVER -c --add-missing --force --gnu || exit 1
 autoconf || exit 1
+
+# remove once it comes via config.sub directly
+perl -p -i -e 's/(\| hcos\* )/$1| l4re* /' config.sub

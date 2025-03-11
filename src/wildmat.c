@@ -50,9 +50,7 @@
 **	So there you go.  (I anonymized his email address as I don't know
 **	that he was particularly interested in having it "advertised".)
 */
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "minicom.h"
 

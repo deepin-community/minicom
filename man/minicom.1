@@ -90,12 +90,10 @@ flag, the IBM line characters are displayed untranslated.
 .TP 0.5i
 .B \-c, \-\-color=on/off
 .BR C olor
-usage. Some terminals (such as the Linux console) support color with
-the standard ANSI escape sequences. Because there is apparently no
-termcap support for color, these escape sequences are hard-coded into
-minicom. Therefore this option is off by default.  You can turn it on
-with '\-c on'. This, and the '\-m' option, are good candidates to put
-into the MINICOM environment variable.
+usage. Terminals (such as the Linux console) support color with
+the standard ANSI escape sequences. In case there is no such support,
+color usage can be disabled with '\-c off'. This, and the '\-m' option,
+are good candidates to put into the MINICOM environment variable.
 .TP 0.5i
 .B \-S, \-\-script=SCRIPT
 .BR script .
@@ -217,7 +215,7 @@ minicom, it will try to get its defaults from a file called
 "minirc.\fIconfiguration\fR\|".  So it is possible to create multiple
 configuration files, for different ports, different users etc. Most
 sensible is to use device names, such as tty1, tty64, sio2 etc. If a
-user creates his own configuration file, it will show up in his home
+user creates their own configuration file, it will show up in their home
 directory as ".minirc.dfl" or ".minirc.\fIconfiguration\fR\|".
 .SH USE
 Minicom is window based. To pop-up a window with the function you

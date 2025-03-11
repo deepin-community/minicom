@@ -19,9 +19,7 @@
  *
  *  // jl 23.06.97 adjustable DTR drop time
  */
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "port.h"
 #include "minicom.h"

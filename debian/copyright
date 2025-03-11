@@ -1,7 +1,7 @@
 This package was debianized by Miquel van Smoorenburg <miquels@cistron.nl>.
 It's currently maintained by Martin A. Godisch <godisch@debian.org> and
 Jordi Mallach <jordi@debian.org>. The upstream sources were downloaded from
-https://alioth.debian.org/projects/minicom/.
+https://salsa.debian.org/minicom-team/minicom/-/releases.
 
 Copyright (c) 1991-1996 Miquel van Smoorenburg <miquels@cistron.nl>.
 

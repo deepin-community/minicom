@@ -71,11 +71,4 @@
 #  endif
 #endif
 
-/* Enable music routines. Could we use defined(i386) here? */
-#if defined(__linux__) || defined(_SCO)
-# define VC_MUSIC 1
-# include <linux/version.h>
-# include <linux/serial.h>
-#endif
-
 extern char **environ;

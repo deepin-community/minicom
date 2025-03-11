@@ -186,7 +186,7 @@ int win_init(int fg, int bg, int attr);
 #endif
 /* fmg 8/20/97: both needed by history search section */
 void mc_wdrawelm_inverse( WIN *w, int y, ELM *e);
-void mc_wdrawelm_var(WIN *w, ELM *e, wchar_t *buf);
+void mc_wdrawelm_var(WIN *w, ELM *e, wchar_t **buf);
 void mc_clear_window_simple(WIN *w);
 
 /*

@@ -1,2 +1,2 @@
-version=3
-https://alioth.debian.org/frs/?group_id=30018 .*/minicom-(.*)\.tar\.gz
+version=4
+opts="uversionmangle=s/-rc/~rc/" https://salsa.debian.org/minicom-team/minicom/tags releases/(\S+)

@@ -3,10 +3,10 @@ dnl configure.in autoconf/automake input script
 dnl for minicom
 dnl
 
-AC_INIT([minicom], [2.8], [minicom-devel@lists.alioth.debian.org])
+AC_INIT([minicom],[2.10],[minicom-devel@lists.alioth.debian.org])
 AC_CONFIG_SRCDIR([src/minicom.c])
-AM_CONFIG_HEADER([config.h])
-AC_PREREQ(2.59)
+AC_CONFIG_HEADERS([config.h])
+AC_PREREQ([2.71])
 
 AM_INIT_AUTOMAKE([1.7])
 
@@ -16,34 +16,26 @@ dnl Checks for programs.
 AC_PROG_CC
 AM_PROG_AR
 
-AC_AIX
-AC_MINIX
+AC_SYS_LARGEFILE
+
+AC_USE_SYSTEM_EXTENSIONS
+AC_USE_SYSTEM_EXTENSIONS
 
 AC_PROG_INSTALL
 dnl AC_PROG_LIBTOOL
 AC_PROG_RANLIB
 
-AC_ISC_POSIX
+AC_SEARCH_LIBS([strerror],[cposix])
 AM_ICONV_LINK
 
-AC_ARG_ENABLE([music],
-	AS_HELP_STRING([--enable-music],
-	               [Enable music for certain events (def: DISABLED)]),
-	[], [enable_music="no"])
-if test "x$enable_music" = xyes; then
-	AC_DEFINE(VC_MUSIC, [1], [Music support is enabled])
-fi
-
-AC_ARG_ENABLE([socket],
-	AS_HELP_STRING([--disable-socket],
-	               [Disable socket support (def: enabled)]),
-	[], [enable_socket="yes"])
-if test "x$enable_socket" = xyes; then
-	AC_DEFINE(USE_SOCKET, [1], [Socket support is enabled])
-fi
-
 PKG_PROG_PKG_CONFIG
-if test -n "$PKG_CONFIG"; then
+
+AC_ARG_ENABLE([lockdev],
+        AS_HELP_STRING([--enable-lockdev],
+                       [Enable lockdev support (def: enabled)]),
+        [], [enable_lockdev="yes"])
+
+if test -n "$PKG_CONFIG" && test "x$enable_lockdev" = xyes; then
 	PKG_CHECK_MODULES([LOCKDEV], [lockdev], AC_DEFINE([HAVE_LOCKDEV],[1],[Define if you have lockdev]),[:])
 fi
 
@@ -119,11 +111,11 @@ else
 fi
 
 dnl Set of available languages.
-ALL_LINGUAS="cs da de es fr fi hu id ja nb pl pt_BR ro ru rw sr sv vi zh_CN zh_TW"
+ALL_LINGUAS="cs da de es fr fi hu id ja ka ko nb pl pt_BR ro ru rw sr sv vi zh_CN zh_TW"
 
 dnl Checks for programs.
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.16.1])
+AM_GNU_GETTEXT_VERSION([0.21])
 
 dnl This is a hacky workaround as the m4 scripts for iconv seem to set
 dnl LIBICONV to '-liconv' despite that this lib is not available if iconv
@@ -151,10 +143,8 @@ else
 fi
 
 
-# Some GNU/Linux systems (e.g., SuSE 4.3, 1996) don't have curses, but
-# rather ncurses.  So we check for it.
 TERMLIBS=
-for termlib in tinfo ncurses curses termcap terminfo termlib ; do
+for termlib in tinfow tinfo curses termcap terminfo termlib ; do
    AC_CHECK_LIB(${termlib}, tputs,
      [TERMLIBS="${TERMLIBS} -l${termlib}"; break])
 done
@@ -163,7 +153,7 @@ LIBS="$LIBS $TERMLIBS"
 
 dnl Checks for header files.
 dnl Do not use <ncurses/termcap.h> unless we're linking with ncurses.
-if test "x$termlib" = xncurses; then
+if test "x$termlib" = xncurses -o "x$termlib" = xncursesw ; then
   dnl Use AC_CHECK_HEADERS so the HAVE_*_H symbol gets defined.
   AC_CHECK_HEADERS(ncurses/termcap.h, [found_termcap_h=1])
 fi
@@ -175,10 +165,9 @@ AC_CHECK_LIB(socket, socket)
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
-AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_HEADER_STAT
-AC_HEADER_TIME
+
 
 AC_SYS_POSIX_TERMIOS
 AC_HEADER_TIOCGWINSZ
@@ -187,7 +176,7 @@ if test $ac_cv_sys_posix_termios = yes; then
 fi
 
 AC_CHECK_HEADERS(stdarg.h varargs.h termio.h termios.h \
-	setjmp.h errno.h pwd.h signal.h fcntl.h sgtty.h locale.h \
+	setjmp.h pwd.h signal.h fcntl.h sgtty.h locale.h \
 	sys/stat.h sys/file.h sys/ioctl.h sys/time.h \
 	sys/ttold.h sys/param.h unistd.h posix1_lim.h sgtty.h features.h)
 
@@ -200,7 +189,6 @@ AC_TYPE_SIZE_T
 AC_STRUCT_TM
 
 dnl Checks for library functions.
-AC_TYPE_SIGNAL
 AC_FUNC_ERROR_AT_LINE
 AC_FUNC_CLOSEDIR_VOID
 AM_WITH_DMALLOC
@@ -219,13 +207,8 @@ AC_MSG_CHECKING(for com line lock directory)
 
 if test "x$UUCPLOCK" != x
 then
-	if test -d $UUCPLOCK
-	then
-		AC_MSG_RESULT($UUCPLOCK)
-		AC_DEFINE_UNQUOTED(UUCPLOCK, "$UUCPLOCK", [Lock directory])
-	else
-		UUCPLOCK=""
-	fi
+	AC_MSG_RESULT($UUCPLOCK)
+	AC_DEFINE_UNQUOTED(UUCPLOCK, "$UUCPLOCK", [Lock directory])
 fi
 
 if test "x$UUCPLOCK" = x
@@ -309,7 +292,7 @@ then
 	CFLAGS="$CFLAGS -I\$(top_srcdir)/lib"
 fi
 
-if test "x$ac_cv_prog_gcc" = xyes
+if test "x$ac_cv_c_compiler_gnu" = xyes
 then
 	CFLAGS="$CFLAGS -W -Wall -Wextra -std=gnu99 -fno-common -Wno-format-truncation"
 fi
@@ -336,13 +319,6 @@ AH_BOTTOM([
  */
 #if defined (__linux__)
 #  define KEY_KLUDGE 1
-#endif
-
-/* And this for the translation tables (vt100 -> ASCII) */
-#if __STDC__
-#  define TRANSLATE 1
-#else
-#  define TRANSLATE 0
 #endif
 ])
 

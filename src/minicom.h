@@ -35,23 +35,14 @@
 
 #include <time.h>
 #include <stdbool.h>
-
-#if HAVE_LOCKDEV
-#include <ttylock.h>
-#endif
-
-#ifdef USE_SOCKET
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <arpa/inet.h>
-#endif
 
-/*
- * kubota@debian.or.jp 08/08/98
- * COLS must be equal to or less than MAXCOLS.
- */
-#define MAXCOLS 256
+#if HAVE_LOCKDEV
+#include <ttylock.h>
+#endif
 
 #define XA_OK_EXIST	1
 #define XA_OK_NOTEXIST	2
@@ -91,8 +82,16 @@ EXTERN int wrapln;	/* Linewrap default */
 EXTERN int display_hex; /* Display in hex */
 EXTERN int tempst;	/* Status line is temporary */
 EXTERN int escape;	/* Escape code. */
-EXTERN int option_T_used; /* option -T has been supplied, obsolete, print warning */
 
+enum Lockfile_mode
+{
+  Lockfile_mode_unset   = 0,
+  Lockfile_mode_uucp    = 1,
+  Lockfile_mode_flock   = 2,
+  Lockfile_mode_ttylock = 3,
+  Lockfile_mode_max     = 4,
+};
+EXTERN enum Lockfile_mode lockfile_mode;
 EXTERN char lockfile[270]; /* UUCP lock file of terminal */
 EXTERN char homedir[256];  /* Home directory of user */
 EXTERN char logfname[PARS_VAL_LEN]; /* Name of the logfile */
@@ -116,7 +115,6 @@ EXTERN char *dial_number;   /* Number we've dialed. */
 EXTERN char *dial_user;     /* Our username there */
 EXTERN char *dial_pass;     /* Our password */
 
-#ifdef USE_SOCKET
 enum Socket_type {
   Socket_type_no_socket = 0,
   Socket_type_unix = 1,
@@ -128,14 +126,6 @@ static inline int portfd_connected(void)
 {
   return (portfd_is_socket && !portfd_is_connected) ? -1 : portfd;
 }
-#else
-#define portfd_is_socket 0
-#define portfd_is_connected 0
-static inline int portfd_connected(void)
-{
-  return portfd;
-}
-#endif /* USE_SOCKET */
 
 /*
  * fmg 8/22/97
@@ -197,9 +187,6 @@ size_t one_wctomb (char *s, wchar_t wchar);
 size_t mbswidth(const char *s);
 
 /* Prototypes from file: dial.c */
-#if VC_MUSIC
-void music(void);
-#endif
 void mputs(const char *s , int how);
 void modeminit(void);
 void modemreset(void);
@@ -252,6 +239,9 @@ void status_set_display(const char *text, int duration_s);
 void port_init(void);
 void toggle_addlf(void);
 void toggle_local_echo(void);
+void set_local_echo(int val);
+void set_addlf(int val);
+void set_addcr(int val);
 
 void drawhist_look(WIN *w, int y, int r, wchar_t *look, int case_matters);
 void searchhist(WIN *w_hist, wchar_t *str);
@@ -317,8 +307,9 @@ extern int io_pending, pendingkeys;
 /* Prototypes from file: config.c */
 void domacros(void);
 
+void device_close(void);
 
-int lockfile_create(int no_msgs);
+int lockfile_create(void);
 void lockfile_remove(void);
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
@@ -345,3 +336,13 @@ enum {
   TIMESTAMP_LINE_DELTA,
   TIMESTAMP_LINE_NR_OF_OPTIONS, // must be last
 };
+
+int toggle_line_timestamp(void);
+const char *line_timestamp_description(void);
+const char *timestamp_option_idstring(const int o);
+
+
+/* Enhanced snprintf function -- as from Linux */
+int vscnprintf(char *buf, size_t size, const char *fmt, va_list args);
+int scnprintf(char *buf, size_t size, const char *fmt, ...)
+    __attribute__((format(printf, 3, 4)));

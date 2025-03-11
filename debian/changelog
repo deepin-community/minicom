@@ -1,3 +1,46 @@
+minicom (2.10-1) unstable; urgency=low
+
+  * New upstream relase.
+  * Fixed watch file.
+  * Updated standards version.
+
+ -- Martin A. Godisch <godisch@debian.org>  Thu, 27 Feb 2025 10:13:31 +0100
+
+minicom (2.9-5) unstable; urgency=low
+
+  * Removed Vcs headers. There was a misunderstanding, the minicom Debian
+    source package files are not tracked in a vcs repository.
+
+ -- Martin A. Godisch <godisch@debian.org>  Sun, 17 Mar 2024 07:21:51 +0100
+
+minicom (2.9-4) unstable; urgency=low
+
+  * Fixed path to system-wide config file, thanks to Andrey Melnikov.
+
+ -- Martin A. Godisch <godisch@debian.org>  Sat, 10 Feb 2024 13:35:42 +0100
+
+minicom (2.9-3) unstable; urgency=low
+
+  * Fixed build-dependencies.
+
+ -- Martin A. Godisch <godisch@debian.org>  Tue, 06 Feb 2024 18:37:15 +0100
+
+minicom (2.9-2) unstable; urgency=low
+
+  * Switched build system to debhelper.
+
+ -- Martin A. Godisch <godisch@debian.org>  Tue, 06 Feb 2024 16:03:17 +0100
+
+minicom (2.9-1) unstable; urgency=low
+
+  * New upstream release, thanks to Adam Lackorzynski.
+  * Updated standards version.
+  * Updated build-depends.
+  * Added debian/control vcs headers, closes: #710577.
+  * Updated watch file.
+
+ -- Martin A. Godisch <godisch@debian.org>  Tue, 06 Feb 2024 06:31:31 +0100
+
 minicom (2.8-2) unstable; urgency=medium
 
   * Fixed history buffer allocation, applied upstream 2021-06-13 patches,

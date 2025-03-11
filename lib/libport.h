@@ -18,8 +18,4 @@ extern int vsnprintf (char *str, size_t count, const char *fmt, va_list arg);
 int usleep(unsigned usecs);
 #endif
 
-#ifndef HAVE_ERROR
-/* TODO */
-#endif
-
 #endif /* !HLIB_PORT */

@@ -1,3 +1,9 @@
+minicom (2.10-1deepin1) unstable; urgency=low
+
+  * Set NoDisplay=true for minicom.desktop
+
+ -- lhdjply <lhdjply@126.com>  Thu, 27 Mar 2025 11:19:31 +0800
+
 minicom (2.10-1) unstable; urgency=low
 
   * New upstream relase.

@@ -3,6 +3,6 @@ Categories=System;Network;Dialup;ConsoleOnly;
 Comment=Friendly menu driven serial communication program
 Exec=minicom
 Name=minicom
-NoDisplay=false
+NoDisplay=true
 Terminal=true
 Type=Application

@@ -1,3 +1,9 @@
+minicom (2.10-1deepin2) unstable; urgency=medium
+
+  * fix: Print a message when failing to open a non-socket device 
+
+ -- zengwei <zengwei1@uniontech.com>  Tue, 21 Apr 2026 10:52:37 +0800
+
 minicom (2.10-1deepin1) unstable; urgency=low
 
   * Set NoDisplay=true for minicom.desktop

@@ -1,2 +1,3 @@
 01manual.diff
 04reproducible.diff
+Print-message-when-failing-to-open-non-socket-device.patch

@@ -1,3 +1,12 @@
+minicom (2.10-1deepin3) unstable; urgency=medium
+
+  * fix: backport upstream 573e39e to fix Chinese UI window misalignment
+  * Support multi-column characters for window drawing (src/window.c)
+  * po/zh_CN: shorten modem init string, avoid overlong help line
+    wrapping
+
+ -- lichenggang <lichenggang@uniontech.com>  Fri, 09 Oct 2026 19:19:08 +0800
+
 minicom (2.10-1deepin2) unstable; urgency=medium
 
   * fix: Print a message when failing to open a non-socket device 

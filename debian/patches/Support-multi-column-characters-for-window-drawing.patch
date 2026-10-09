@@ -1,0 +1,124 @@
+From 573e39ea5938e227c75c8fd073579fa473bb7961 Mon Sep 17 00:00:00 2001
+From: Adam Lackorzynski <adam@l4re.org>
+Date: Mon, 5 Jan 2026 00:50:35 +0100
+Subject: [PATCH] Support multi-column characters for window drawing
+
+This fixes ugly dis-alignment of windows when multi-columns character
+are used in the text, like in japanese.
+
+Signed-off-by: Takeshi Hamasaki <takeshi.ken.hamasaki@gmail.com>
+Signed-off-by: Adam Lackorzynski <adam@l4re.org>
+---
+ src/window.c | 41 ++++++++++++++++++++++++++---------------
+ 1 file changed, 26 insertions(+), 15 deletions(-)
+
+diff --git a/src/window.c b/src/window.c
+index f2cba36..a41b928 100644
+--- a/src/window.c
++++ b/src/window.c
+@@ -334,9 +334,10 @@ static void _gotoxy(int x, int y)
+  *                 0: only write to memory, not to screen
+  *                 1: write to both screen and memory
+  */
+-static void _write(wchar_t c, int doit, int x, int y, char attr, char color)
++static int _write(wchar_t c, int doit, int x, int y, char attr, char color)
+ {
+   ELM *e;
++  int cwidth = 0;
+ 
+   /* If the terminal has automatic margins, we can't write to the
+    * last line, last character. After scrolling, this "invisible"
+@@ -373,16 +374,20 @@ static void _write(wchar_t c, int doit, int x, int y, char attr, char color)
+         for (i = 0; i < len; i++)
+           outchar(buf[i]);
+       }
++      cwidth = wcwidth(c);
+ 
+-      curx++;
++      curx += cwidth;
+     }
+     if (doit >= 0) {
+       e = &gmap[x + y * COLS];
+       e->value = c;
+       e->attr = attr;
+       e->color = color;
++
++      cwidth = wcwidth(c);
+     }
+   }
++  return cwidth;
+ }
+ 
+ /*
+@@ -590,6 +595,7 @@ void mc_wclose(WIN *win, int replace)
+ {
+   ELM *e;
+   int x, y;
++  int cwidth;
+ 
+   if (!win)
+     return;
+@@ -613,14 +619,16 @@ void mc_wclose(WIN *win, int replace)
+       /* in multibyte characters such as Japanese -- from here */
+       ELM *g;
+       g = gmap + (y * stdwin->xs);
+-      for (x = 0 ; x < win->x1; x++) {
+-        _write(g->value, 1, x, y, g->attr, g->color);
+-        g++;
++      for (x = 0 ; x < win->x1;) {
++        cwidth = _write(g->value, 1, x, y, g->attr, g->color);
++        x += cwidth;
++        g += cwidth;
+       }
+       /* to here */
+-      for (x = win->x1; x <= win->x2; x++) {
+-        _write(e->value, 1, x, y, e->attr, e->color);
+-        e++;
++      for (x = win->x1; x <= win->x2;) {
++        cwidth = _write(e->value, 1, x, y, e->attr, e->color);
++        x += cwidth;
++        e += cwidth;
+       }
+     }
+     _gotoxy(win->o_curx, win->o_cury);
+@@ -703,6 +711,7 @@ void mc_wredraw(WIN *w, int newdirect)
+   int minx, maxx, miny, maxy;
+   ELM *e;
+   int x, y;
++  int cwidth;
+   int addcnt;
+ 
+   minx = w->x1;
+@@ -724,9 +733,10 @@ void mc_wredraw(WIN *w, int newdirect)
+   e = gmap + (miny * stdwin->xs) + minx;
+ 
+   for (y = miny; y <= maxy; y++) {
+-    for(x = minx; x <= maxx; x++) {
+-      _write(e->value, -1, x, y, e->attr, e->color);
+-      e++;
++    for(x = minx; x <= maxx; ) {
++      cwidth = _write(e->value, -1, x, y, e->attr, e->color);
++      x += cwidth;
++      e += cwidth;
+     }
+     e += addcnt;
+   }
+@@ -1009,10 +1019,11 @@ void mc_wputc(WIN *win, wchar_t c)
+       if (c != '\n') {
+ 	if (!win->wrap && win->curx >= win->xs)
+ 	  c = '>';
+-        _write(c, win->direct, win->curx + win->x1,
+-               win->cury + win->y1, win->attr, win->color);
+-        if (++win->curx >= win->xs && !win->wrap) {
+-          win->curx--;
++        int cwidth = _write(c, win->direct, win->curx + win->x1,
++                            win->cury + win->y1, win->attr, win->color);
++        win->curx += cwidth;
++        if (win->curx >= win->xs && !win->wrap) {
++          win->curx -= cwidth;
+           curx = 0; /* Force to move */
+           mv++;
+         }
+-- 
+2.51.0
+

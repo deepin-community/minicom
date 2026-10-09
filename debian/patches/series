@@ -1,3 +1,5 @@
 01manual.diff
 04reproducible.diff
 Print-message-when-failing-to-open-non-socket-device.patch
+Support-multi-column-characters-for-window-drawing.patch
+zh_CN-po-shorten-modem-init-string.patch

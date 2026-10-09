@@ -1,0 +1,31 @@
+From: lichenggang <lichenggang@uniontech.com>
+Date: Fri, 9 Oct 2026 19:18:03 +0800
+Subject: [PATCH] po/zh_CN: shorten modem init string in help screen
+
+The "send break" help line is 68 display columns wide (CJK characters
+occupy two columns each), one column beyond the 67-column inner width
+of the help window, so it wraps even after the multi-column window
+drawing fix.  Shorten "初始化调制解调器" to "初始化 Modem" and re-pad
+the dot runs so that the M and Q keys line up with the neighbouring
+rows again.
+
+---
+ po/zh_CN.po | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/po/zh_CN.po b/po/zh_CN.po
+index 38634ca..79baa0b 100644
+--- a/po/zh_CN.po
++++ b/po/zh_CN.po
+@@ -1185,7 +1185,7 @@
+ 
+ #: src/help.c:64
+ msgid " send break.........F  initialize Modem...M | Quit with no reset.Q\n"
+-msgstr " 送出 break.........F  初始化调制解调器.....M | 离开而不重置.......Q\n"
++msgstr " 送出 break.........F  初始化 Modem........M | 离开而不重置.......Q\n"
+ 
+ #: src/help.c:65
+ msgid " Terminal settings..T  run Kermit.........K | Cursor key mode....I\n"
+-- 
+2.43.0
+
